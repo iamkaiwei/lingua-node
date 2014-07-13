@@ -1,0 +1,46 @@
+[
+  {
+    "firstname" : "Ruth",
+    "lastname" : "Moiduberg",
+    "email" : "ruth_ywkxxvl_moiduberg@tfbnw.net",
+    "gender" : "female",
+    "facebook_id" : "256044071269049",
+    "avatar_url" : "https://graph.facebook.com/256044071269049/picture?type=large",
+    "_id" : "53c2a5303dfda0ef14f3aeec",
+    "created_at" : "2014-07-13T15:26:40.173Z",
+    "level" : 0
+  },
+  {
+    "firstname" : "Mark",
+    "lastname" : "Vijayvergiyasen",
+    "email" : "mark_nselxrq_vijayvergiyasen@tfbnw.net",
+    "gender" : "male",
+    "facebook_id" : "348917748589713",
+    "avatar_url" : "https://graph.facebook.com/348917748589713/picture?type=large",
+    "_id" : "53c2a5523dfda0ef14f3aeed",
+    "created_at" : "2014-07-13T15:27:14.161Z",
+    "level" : 0
+  },
+  {
+    "firstname" : "Linda",
+    "lastname" : "Warmanstein",
+    "email" : "linda_yylxtxn_warmanstein@tfbnw.net",
+    "gender" : "female",
+    "facebook_id" : "343931589099014",
+    "avatar_url" : "https://graph.facebook.com/343931589099014/picture?type=large",
+    "_id" : "53c2a57e3dfda0ef14f3aeee",
+    "created_at" : "2014-07-13T15:27:58.698Z",
+    "level" : 0
+  },
+  {
+    "firstname" : "Lisa",
+    "lastname" : "Fergiewitz",
+    "email" : "lisa_jaybhiu_fergiewitz@tfbnw.net",
+    "gender" : "female",
+    "facebook_id" : "1509902862577297",
+    "avatar_url" : "https://graph.facebook.com/1509902862577297/picture?type=large",
+    "_id" : "53c2a5a03dfda0ef14f3aeef",
+    "created_at" : "2014-07-13T15:28:32.756Z",
+    "level" : 0
+  }
+]

@@ -6,7 +6,7 @@ var https = require('https')
  * @return {Array} users
  */
 exports.list = function(req, res){
-  res.app.db.models.User.find({}, 'firstname lastname', function(err, users){
+  res.app.db.models.User.find({}, 'firstname lastname email gender avatar_url level', function(err, users){
     res.send(users);
   });
 };
