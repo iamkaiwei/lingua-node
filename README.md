@@ -14,7 +14,16 @@
 * install NodeJS and MongoDB.
 * install dependencies: run ```npm install```
 
+### Seed data ###
+Empty all collections
+```
+  grunt db-reset
+```
+Seed sample data
+```
+  grunt db-seed
+```
 ### Start server ###
 * Start mongoDB server: run ```mongod```
 * Start server: run ```node app.js```
-* Start server with Nodemon (for development): run ```nodemon app.js```
+* Start server with Nodemon (for development): run ```npm start```
