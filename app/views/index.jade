@@ -21,6 +21,9 @@ block content
   div.welcome
     h1
       | #{welcomeMsg}
+    if currentUserId
+      p
+        | Current user: #{currentUserId}
     button(onClick="checkLoginState();")
       | Login with Facebook
     

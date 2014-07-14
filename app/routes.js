@@ -5,6 +5,7 @@ exports = module.exports = function(app) {
   app.get('/', function(req, res){
     res.render('index', {
       welcomeMsg: 'Hello Lingua!',
+      currentUserId: req.session.user,
       facebookAppId: app.config.facebook_app_id
     });
   });

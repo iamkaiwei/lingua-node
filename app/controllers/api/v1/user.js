@@ -34,12 +34,14 @@ exports.post = function(req, res){
             avatar_url: "https://graph.facebook.com/" + fbProfile.id + "/picture?type=large"
           }).save(function(err, user){
             if (!err) {
+              req.session.user = user._id;
               res.send(user);
             } else {
               res.send(500, err.message);
             }
           });
         } else {
+          req.session.user = user._id;
           res.send(user);
         }
       });
