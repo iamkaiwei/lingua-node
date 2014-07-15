@@ -3,17 +3,27 @@ function checkLoginState(){
     console.log(response.status);
 
     if (response.status === 'connected') {
-      console.log(response.authResponse.accessToken);
-      // $.post("/users", {facebook_token: response.authResponse.accessToken}, function(data){
-      //   console.log(data);
-      // });
+      $.post("/oauth/token", {
+        facebook_token: response.authResponse.accessToken,
+        grant_type: 'password',
+        client_id: 'lingua-ios',
+        client_secret: 'l1n9u4'
+      }, function(data){
+        console.log("Facebook token: " + response.authResponse.accessToken);
+        console.log("Exchanged access token: " + data.access_token);
+      });
     }
     else {
       FB.login(function(user){
-        console.log(user.authResponse.accessToken);
-        // $.post("/users", {facebook_token: user.authResponse.accessToken}, function(data){
-        //   console.log(data);
-        // });
+        $.post("/oauth/token", {
+          facebook_token: user.authResponse.accessToken,
+          grant_type: 'password',
+          client_id: 'lingua-ios',
+          client_secret: 'l1n9u4'
+        }, function(data){
+          console.log("Facebook token: " + user.authResponse.accessToken);
+          console.log("Exchanged access token: " + data.access_token);
+        });
       },{scope: 'email, user_birthday'});
     }
   });
