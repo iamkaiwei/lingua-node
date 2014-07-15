@@ -9,7 +9,10 @@ var express = require('express')
   , cookieParser = require('cookie-parser')
   , session = require('express-session')
   , errorhandler = require('errorhandler')
+  , oauthserver = require('node-oauth2-server');
 ;
+
+var models = require('./app/schemas');
 
 //create express app
 var app = express(),
@@ -42,6 +45,12 @@ app.use(session({
   secret: "5up3rS3cr3tK3y"
 }));
 
+app.oauth = oauthserver({
+  model: models.oauth,
+  grants: ['password'],
+  debug: true
+});
+
 //route requests
 require('./app/routes')(app);
 
@@ -61,6 +70,8 @@ if ('production' == app.get('env')) {
 //or you can export them into your shell environment:
 //$ export NODE_ENV=production
 //$ node app.js
+
+app.use(app.oauth.errorHandler());
 
 server.listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
