@@ -12,6 +12,6 @@ exports = module.exports = function(app) {
   });
 
   //user view
-  app.get('/users', app.oauth.authorise(), users.list);
-  app.get('/users/me', app.oauth.authorise(), users.me);
+  app.get('/api/v1/users', app.oauth.authorise(), users.list);
+  app.get('/api/v1/users/me', app.oauth.authorise(), users.me);
 };

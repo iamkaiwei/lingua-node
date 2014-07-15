@@ -32,13 +32,13 @@ OAuthUsersSchema.static('getUser', function(username, password, facebook_token, 
             avatar_url: "https://graph.facebook.com/" + fbProfile.id + "/picture?type=large"
           }).save(function(err, user){
             if (!err) {
-              cb(null, user);
+              cb(null, user.id);
             } else {
               cb(err);
             }
           });
         } else {
-          cb(null, user);
+          cb(null, user.id);
         }
       });
     }));
