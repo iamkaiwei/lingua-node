@@ -7,3 +7,7 @@ exports.list = function(req, res){
     res.send(users);
   });
 };
+
+exports.me = function(req, res){
+  
+};

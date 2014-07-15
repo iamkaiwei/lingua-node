@@ -1,8 +1,8 @@
-var mongoose = require('mongoose'),
-  Schema = mongoose.Schema,
-  validate = require('mongoose-validator').validate,
-  https = require('https'),
-  bl = require('bl');
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+var validate = require('mongoose-validator').validate;
+var https = require('https');
+var bl = require('bl');
 
 var OAuthUsersSchema = new Schema({
   firstname: { type: String },

@@ -1,6 +1,6 @@
-var mongoose = require('mongoose'),
-  Schema = mongoose.Schema,
-  authorizedClientIds = ['papers3', 'papers3-mac'];
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+var authorizedClientIds = ['lingua-ios', 'lingua-web', 'lingua-android'];
 
 var OAuthClientsSchema = new Schema({
   clientId: String,

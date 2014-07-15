@@ -3,16 +3,14 @@ var express = require('express')
   , http = require('http')
   , path = require('path')
   , mongoose = require('mongoose')
+  , oauthserver = require('node-oauth2-server')
   , morgan  = require('morgan')
   , bodyParser = require('body-parser')
   , methodOverride = require('method-override')
   , cookieParser = require('cookie-parser')
   , session = require('express-session')
   , errorhandler = require('errorhandler')
-  , oauthserver = require('node-oauth2-server');
 ;
-
-var models = require('./app/schemas');
 
 //create express app
 var app = express(),
@@ -46,7 +44,7 @@ app.use(session({
 }));
 
 app.oauth = oauthserver({
-  model: models.oauth,
+  model: app.db.models.oauth,
   grants: ['password'],
   debug: true
 });
@@ -66,10 +64,6 @@ if ('development' == app.get('env')) {
 if ('production' == app.get('env')) {
   app.enable('view cache');
 }
-//$ NODE_ENV=production node app.js
-//or you can export them into your shell environment:
-//$ export NODE_ENV=production
-//$ node app.js
 
 app.use(app.oauth.errorHandler());
 
