@@ -1,7 +1,8 @@
 var mongoose = require('mongoose');
 mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost/lingua_development');
 
-var User = require('./app/schemas/User')
+var User = require('./app/models/user')
+  , OAuthClientsModel = require('./app/models/oauth_client');
 
 module.exports = function(grunt) {
   grunt.registerTask('db-reset', function() {
@@ -10,7 +11,11 @@ module.exports = function(grunt) {
 
     User.collection.remove(function() {
       console.log("Empty users collection");
-      done();
+
+      OAuthClientsModel.collection.remove(function() {
+        console.log("Empty oauth_clients collection");
+        done();
+      });
     });
   });
 
@@ -21,6 +26,19 @@ module.exports = function(grunt) {
     .then(
       function() {
         console.log('Inserted all users');
+        return OAuthClientsModel.create({
+          clientId: 'lingua-ios',
+          clientSecret: 'l1n9u4',
+          redirectUri: '/oauth/redirect'
+        });
+      },
+      function(err) {
+        console.log('Error: '+err.err);
+        done(false);
+    })
+    .then(
+      function() {
+        console.log('Inserted all clients');
         done();
       },
       function(err) {

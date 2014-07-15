@@ -3,6 +3,7 @@ var express = require('express')
   , http = require('http')
   , path = require('path')
   , mongoose = require('mongoose')
+  , oauthserver = require('node-oauth2-server')
   , morgan  = require('morgan')
   , bodyParser = require('body-parser')
   , methodOverride = require('method-override')
@@ -36,6 +37,17 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(methodOverride());
 app.use(cookieParser());
+app.use(session({
+  resave: true,
+  saveUninitialized: true,
+  secret: "5up3rS3cr3tK3y"
+}));
+
+app.oauth = oauthserver({
+  model: app.db.models.oauth,
+  grants: ['password'],
+  debug: true
+});
 
 //route requests
 require('./app/routes')(app);
@@ -52,10 +64,8 @@ if ('development' == app.get('env')) {
 if ('production' == app.get('env')) {
   app.enable('view cache');
 }
-//$ NODE_ENV=production node app.js
-//or you can export them into your shell environment:
-//$ export NODE_ENV=production
-//$ node app.js
+
+app.use(app.oauth.errorHandler());
 
 server.listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

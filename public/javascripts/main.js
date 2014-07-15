@@ -3,15 +3,17 @@ function checkLoginState(){
     console.log(response.status);
 
     if (response.status === 'connected') {
-      $.post("/users", {facebook_token: response.authResponse.accessToken}, function(data){
-        console.log(data);
-      });
+      console.log(response.authResponse.accessToken);
+      // $.post("/users", {facebook_token: response.authResponse.accessToken}, function(data){
+      //   console.log(data);
+      // });
     }
     else {
       FB.login(function(user){
-        $.post("/users", {facebook_token: user.authResponse.accessToken}, function(data){
-          console.log(data);
-        });
+        console.log(user.authResponse.accessToken);
+        // $.post("/users", {facebook_token: user.authResponse.accessToken}, function(data){
+        //   console.log(data);
+        // });
       },{scope: 'email, user_birthday'});
     }
   });
