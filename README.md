@@ -30,7 +30,7 @@ Seed sample data
 
 ### Note for developers ###
 If you reinstall the dependencies from package.json, you will need to update the following function in node_modules/node-oauth2-server/lib/grant.js
-```
+```javascript
 function usePasswordGrant (done) {
   var uname = this.req.body.username,
     pword = this.req.body.password,
