@@ -25,6 +25,21 @@ exports.create = function(req, res){
   newConversation.teacher_id = req.body.teacher_id;
   newConversation.learner_id = req.body.learner_id;
   newConversation.save(function (err) {
+    if (!err) {
+      // add this conversation to teacher user
+      req.app.db.models.User.findById(req.body.teacher_id, function(err1, user){
+        console.log(user);
+        user.conversations.push(newConversation._id);
+        user.save();
+      });
+
+      // add this conversation to learner user
+      req.app.db.models.User.findById(req.body.learner_id, function(err1, user){
+        user.conversations.push(newConversation._id);
+        user.save();
+      });
+    };
+
     res.send(err || newConversation.id);
   });
 };
