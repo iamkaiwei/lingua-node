@@ -34,3 +34,15 @@ exports.getUserById = function(req, res){
       res.send(user);
     });
 };
+
+exports.getAllConversations = function(req, res){
+  res.app.db.models.User
+  .findById(req.params.id, 'conversations')
+  .populate({
+    path: 'conversations', 
+    select: '_id learner_id teacher_id created_at lastest_update'
+  })
+  .exec(function(err, user){
+   res.send(user.conversations || []);
+  });
+};
