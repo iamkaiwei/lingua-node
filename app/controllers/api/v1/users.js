@@ -19,3 +19,10 @@ exports.me = function(req, res){
       res.send(user);
     });
 };
+
+exports.update = function(req, res){
+  res.app.db.models.User
+    .findByIdAndUpdate(req.params.id, req.body, function(err, model){
+      res.send(err || 200);
+    });
+};
