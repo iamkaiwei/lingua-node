@@ -5,7 +5,10 @@
 exports.list = function(req, res){
   res.app.db.models.User.find(
     {},
-    'firstname lastname email gender avatar_url level',
+    {
+      __v: 0,
+      conversations: 0
+    },
     function(err, users){
       res.send(users);
     });
@@ -14,13 +17,23 @@ exports.list = function(req, res){
 exports.me = function(req, res){
   res.app.db.models.User.findById(
     req.user.id,
-    'firstname lastname email gender avatar_url level',
+    {
+      __v: 0,
+      conversations: 0
+    },
     function(err, user){
       res.send(user);
     });
 };
 
 exports.update = function(req, res){
+  // protected fields
+  delete req.body.level;
+  delete req.body.learner_badges;
+  delete req.body.teacher_badges;
+  delete req.body.written_proficiency_id;
+  delete req.body.spoken_proficiency_id;
+
   res.app.db.models.User
     .findByIdAndUpdate(req.params.id, req.body, function(err, model){
       res.send(err || 200);
