@@ -46,3 +46,24 @@ exports.getAllConversations = function(req, res){
    res.send(user.conversations || []);
   });
 };
+
+exports.getChatHistory = function(req, res){
+  var fromUserId = req.params.id,
+        toUserId = req.query.to_user;
+
+  res.app.db.models.Conversation
+  .findOne({
+    $or: [
+      { teacher_id: fromUserId, learner_id: toUserId }, 
+      { teacher_id: toUserId, learner_id: fromUserId }
+    ]
+  }, 'messages')
+  .populate({
+    path: 'messages', 
+    select: '_id content message_type_id sender_id created_at',
+    options: { sort: [{created_at: -1}] }
+  })
+  .exec(function(err, conversation){
+   res.send(conversation.messages || []);
+  });
+};
