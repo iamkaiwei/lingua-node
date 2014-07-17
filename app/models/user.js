@@ -8,12 +8,21 @@ var OAuthUsersSchema = new Schema({
   firstname: { type: String },
   lastname: { type: String },
   email: { type: String },
+  birthday: Date,
   gender: { type: String },
   facebook_id: { type: String, required: false },
   avatar_url: String,
   level: { type: Number, default: 0 },
   created_at: { type: Date, default: Date.now },
-  conversations: [{type: Schema.Types.ObjectId, ref: 'conversations'}]
+  conversations: [{type: Schema.Types.ObjectId, ref: 'conversations'}],
+  device_token: { type: String },
+  native_language_id: { type: Number},
+  learn_language_id: Number,
+  introduction: String,
+  written_proficiency_id: Number,
+  spoken_proficiency_id: Number,
+  teacher_badges: { type: Number, default: 0},
+  learner_badges: { type: Number, default: 0}
 });
 
 OAuthUsersSchema.static('getUser', function(username, password, facebook_token, cb) {
