@@ -26,3 +26,11 @@ exports.update = function(req, res){
       res.send(err || 200);
     });
 };
+
+exports.getUserById = function(req, res){
+  res.app.db.models.User.findById(req.params.id,
+    'firstname lastname email gender avatar_url level',
+    function(err, user){
+      res.send(user);
+    });
+};
