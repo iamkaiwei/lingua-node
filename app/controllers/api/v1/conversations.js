@@ -4,7 +4,14 @@
  */
 
 exports.list = function(req, res){
-  res.app.db.models.Conversation.find({}, function(err, conversations){
+  res.app.db.models.Conversation
+  .find({}, '_id learner_id teacher_id created_at lastest_update messages')
+  .populate({
+    path: 'messages', 
+    select: ' _id content message_type_id sender_id created_at',
+    options: {limit: 10}
+  })
+  .exec(function(err, conversations){
    res.json(conversations); 
   });
 };
