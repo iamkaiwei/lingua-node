@@ -9,6 +9,13 @@ exports.create = function(req, res){
   newMessage.message_type_id = req.body.message_type_id;
   newMessage.content = req.body.content;
   newMessage.save(function (err) {
+  	if (!err) {
+  		req.app.db.models.Conversation.findById(req.body.conversation_id, function(err1, conversation){
+  			conversation.messages.push(newMessage._id);
+  			conversation.save();
+  		});
+  	};
+
     res.send(err || newMessage.id);
   });
 };
