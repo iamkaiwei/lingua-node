@@ -12,7 +12,8 @@ var OAuthUsersSchema = new Schema({
   facebook_id: { type: String, required: false },
   avatar_url: String,
   level: { type: Number, default: 0 },
-  created_at: { type: Date, default: Date.now }
+  created_at: { type: Date, default: Date.now },
+  conversations: [{type: Schema.Types.ObjectId, ref: 'conversations'}]
 });
 
 OAuthUsersSchema.static('getUser', function(username, password, facebook_token, cb) {
