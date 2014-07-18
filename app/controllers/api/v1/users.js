@@ -80,3 +80,33 @@ exports.getChatHistory = function(req, res){
    res.send(conversation.messages || []);
   });
 };
+
+exports.sendNotification = function(req, res){
+  var Parse = require('parse').Parse;
+  Parse.initialize(res.app.config.parse_app_id, res.app.config.parse_javascript_key);
+
+  // get device token
+  res.app.db.models.User.findById(req.body.user_id, 'device_token', function(err, user){
+    if (err) {
+      res.send(404, "wrong user id");
+    };
+
+    var query = new Parse.Query(Parse.Installation);
+    query.equalTo('deviceToken', user.device_token);
+     
+    Parse.Push.send({
+      where: query,
+      data: {
+        alert: req.body.message
+      }
+    },
+    {
+      success: function() {
+        res.send(200, 'Push success');
+      },
+      error: function(error) {
+        res.send(500, error);
+      }
+    });
+  });
+};
