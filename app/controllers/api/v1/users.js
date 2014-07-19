@@ -5,10 +5,10 @@
 exports.list = function(req, res){
   res.app.db.models.User.find(
     {},
-    {
-      __v: 0,
-      conversations: 0
-    },
+    // {
+    //   __v: 0,
+    //   conversations: 0
+    // },
     function(err, users){
       res.send(users);
     });

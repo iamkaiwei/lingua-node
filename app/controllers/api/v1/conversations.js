@@ -30,29 +30,27 @@ exports.list = function(req, res){
  * Create new conversation
  * @param {String} teacher_id
  * @param {String} learner_id
- * @return {String} conversationId
+ * @return {JSON} conversation
  */
 exports.create = function(req, res){
-  var newConversation = new res.app.db.models.Conversation();
-  newConversation.teacher_id = req.body.teacher_id;
-  newConversation.learner_id = req.body.learner_id;
-  newConversation.save(function(err){
-    if (!err) {
-      // add this conversation to teacher user
-      req.app.db.models.User.findById(req.body.teacher_id, function(err1, user){
-        console.log(user);
-        user.conversations.push(newConversation._id);
-        user.save();
-      });
+  var b = req.body;
 
-      // add this conversation to learner user
-      req.app.db.models.User.findById(req.body.learner_id, function(err1, user){
-        user.conversations.push(newConversation._id);
-        user.save();
+  new res.app.db.models.Conversation({
+    teacher_id: b.teacher_id,
+    learner_id: b.learner_id
+  }).save(function(err, conversation){
+    res.app.db.models.User.update(
+      {
+        $or: [
+          { _id: b.teacher_id },
+          { _id: b.learner_id }
+        ]
+      },
+      { $push: {conversations: conversation._id} },
+      { multi: true },
+      function(err, numberAffected, raw){
+        res.send(conversation);
       });
-    }
-
-    res.send(err || newConversation);
   });
 };
 
@@ -61,15 +59,15 @@ exports.create = function(req, res){
  * @return {void}
  */
 exports.update = function(req, res){
-  res.app.db.models.Conversation
-    .findByIdAndUpdate(req.params.id, { 
-      $set: { 
-        teacher_id: req.body.teacher_id,
-        learner_id: req.body.learner_id
-      }
-    }, function(err, model){
-      res.send(err || 200);
-    });
+  // res.app.db.models.Conversation
+  //   .findByIdAndUpdate(req.params.id, { 
+  //     $set: { 
+  //       teacher_id: req.body.teacher_id,
+  //       learner_id: req.body.learner_id
+  //     }
+  //   }, function(err, model){
+  //     res.send(err || 200);
+  //   });
 };
 
 exports.flag = function(req, res){
