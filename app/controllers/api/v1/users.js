@@ -17,10 +17,7 @@ exports.list = function(req, res){
 exports.me = function(req, res){
   res.app.db.models.User.findById(
     req.user.id,
-    {
-      __v: 0,
-      conversations: 0
-    },
+    
     function(err, user){
       res.send(user);
     });

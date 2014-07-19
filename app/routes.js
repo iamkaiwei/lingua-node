@@ -22,13 +22,13 @@ exports = module.exports = function(app) {
   app.get('/api/v1/users/:id/get_chat_history', app.oauth.authorise(), users.getChatHistory);
   app.post('/api/v1/users/send_notification', app.oauth.authorise(), users.sendNotification);
 
-  // conversation
+  //conversation
   app.get('/api/v1/conversations', app.oauth.authorise(), conversations.list);
   app.post('/api/v1/conversations', app.oauth.authorise(), conversations.create);
   app.put('/api/v1/conversations/:id', app.oauth.authorise(), conversations.update);
   app.post('/api/v1/conversations/:id/flag_conversation', app.oauth.authorise(), conversations.flag);
   app.post('/api/v1/conversations/:id/like_conversation', app.oauth.authorise(), conversations.like);
 
-  // message
+  //message
   app.post('/api/v1/messages', app.oauth.authorise(), messages.create);
 };

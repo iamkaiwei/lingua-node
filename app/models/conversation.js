@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var ConversationModel = new Schema({
+var ConversationsSchema = new Schema({
   teacher_id: { type: Schema.Types.ObjectId, ref: 'users', required: true },
   learner_id: { type: Schema.Types.ObjectId, ref: 'users', required: true },
   lastest_update: { type: Date, default: Date.now },
@@ -9,6 +9,6 @@ var ConversationModel = new Schema({
   messages: [{ type: Schema.Types.ObjectId, ref: 'messages' }]
 });
 
-mongoose.model('conversations', ConversationModel);
-var ConversationModel = mongoose.model('conversations');
-module.exports = ConversationModel;
+mongoose.model('conversations', ConversationsSchema);
+var ConversationsModel = mongoose.model('conversations');
+module.exports = ConversationsModel;

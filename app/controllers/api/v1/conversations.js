@@ -1,30 +1,42 @@
 /**
- * List all conversations
+ * List latest conversations of current user (show history)
+ * @param {Number} from
+ * @param {Number} length
  * @return {Array} conversations
  */
 
 exports.list = function(req, res){
-  res.app.db.models.Conversation
-  .find({}, '_id learner_id teacher_id created_at lastest_update messages')
-  .populate({
-    path: 'messages', 
-    select: ' _id content message_type_id sender_id created_at',
-    options: {limit: 10}
-  })
-  .exec(function(err, conversations){
-   res.json(conversations); 
-  });
+  var q = req.query;
+
+  res.app.db.models.User.findById(
+    req.user.id,
+    function(err, user){
+      res.app.db.models.Conversation
+        .find({ '_id': {$in: user.conversations} })
+        .skip(q.from - 1)
+        .limit(q.length)
+        .sort({ lastest_update: -1})
+        .populate({
+          path: 'messages', 
+          options: {limit: 10}
+        })
+        .exec(function(err, conversations){
+          res.json(conversations);
+        });
+    });
 };
 
 /**
  * Create new conversation
- * @return {String}     conversationId
+ * @param {String} teacher_id
+ * @param {String} learner_id
+ * @return {String} conversationId
  */
 exports.create = function(req, res){
   var newConversation = new res.app.db.models.Conversation();
   newConversation.teacher_id = req.body.teacher_id;
   newConversation.learner_id = req.body.learner_id;
-  newConversation.save(function (err) {
+  newConversation.save(function(err){
     if (!err) {
       // add this conversation to teacher user
       req.app.db.models.User.findById(req.body.teacher_id, function(err1, user){
@@ -38,9 +50,9 @@ exports.create = function(req, res){
         user.conversations.push(newConversation._id);
         user.save();
       });
-    };
+    }
 
-    res.send(err || newConversation.id);
+    res.send(err || newConversation);
   });
 };
 
