@@ -5,23 +5,57 @@
 exports.list = function(req, res){
   res.app.db.models.User.find(
     {},
-    // {
-    //   __v: 0,
-    //   conversations: 0
-    // },
+    {
+      __v: 0,
+      conversations: 0
+    },
     function(err, users){
       res.send(users);
     });
 };
 
+/**
+ * Get current user
+ * @return {JSON} user
+ */
 exports.me = function(req, res){
   res.app.db.models.User.findById(
     req.user.id,
-    
+    {
+      __v: 0,
+      conversations: 0
+    },
     function(err, user){
       res.send(user);
     });
 };
+
+/**
+ * Match current user with an appropriate user
+ * @return {Array} users
+ */
+exports.match = function(req, res){
+  res.app.db.models.User.findById(
+    req.user.id,
+    function(err, currentUser){
+      res.app.db.models.User.aggregate([
+          // { $group: {_id:"$gender", point:{$max:"$point"}} }
+          { $sort: {point:-1} },
+          { $group: {_id:"$gender", user_id:{$first:"$_id"}, point:{$first:"$point"}} }
+        ],
+        function(err, users){
+          users.forEach(function(user){
+            user.point += currentUser.gender !== user._id ? 5 : 0;
+          });
+
+          res.send(users);
+        });
+    });
+};
+
+
+
+
 
 exports.update = function(req, res){
   // protected fields

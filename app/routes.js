@@ -15,6 +15,7 @@ exports = module.exports = function(app) {
 
   //user view
   app.get('/api/v1/users', users.list);
+  app.get('/api/v1/users/match', app.oauth.authorise(), users.match);
   app.get('/api/v1/users/me', app.oauth.authorise(), users.me);
   app.put('/api/v1/users/:id', app.oauth.authorise(), users.update);
   app.get('/api/v1/users/:id', app.oauth.authorise(), users.getUserById);

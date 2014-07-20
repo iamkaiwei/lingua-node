@@ -12,6 +12,7 @@ var OAuthUsersSchema = new Schema({
   gender: { type: String },
   facebook_id: { type: String, required: false },
   avatar_url: String,
+  point: { type: Number, default: 0 },
   level: { type: Number, default: 0 },
   created_at: { type: Date, default: Date.now },
   conversations: [{type: Schema.Types.ObjectId, ref: 'conversations'}],

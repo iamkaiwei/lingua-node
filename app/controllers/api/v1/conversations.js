@@ -17,7 +17,7 @@ exports.list = function(req, res){
         .limit(q.length)
         .sort({ lastest_update: -1})
         .populate({
-          path: 'messages', 
+          path: 'messages',
           options: {limit: 10}
         })
         .exec(function(err, conversations){
