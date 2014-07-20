@@ -25,6 +25,9 @@ app.set('view engine', 'jade');
 //set environment variables
 app.config = require('./app/config')(app);
 
+var Parse = require('parse').Parse;
+Parse.initialize(app.config.parse_app_id, app.config.parse_javascript_key);
+
 //setup mongoose
 app.db = mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost/lingua_development');
 

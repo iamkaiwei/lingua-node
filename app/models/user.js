@@ -8,22 +8,22 @@ var OAuthUsersSchema = new Schema({
   firstname: { type: String },
   lastname: { type: String },
   email: { type: String },
-  birthday: Date,
   gender: { type: String },
-  facebook_id: { type: String, required: false },
+  birthday: Date,
   avatar_url: String,
-  point: { type: Number, default: 0 },
-  level: { type: Number, default: 0 },
-  created_at: { type: Date, default: Date.now },
-  conversations: [{type: Schema.Types.ObjectId, ref: 'conversations'}],
+  facebook_id: { type: String, required: true },
   device_token: { type: String },
-  native_language_id: { type: Number},
-  learn_language_id: Number,
-  introduction: String,
+  native_language_id: { type: Number },
   written_proficiency_id: Number,
   spoken_proficiency_id: Number,
-  teacher_badges: { type: Number, default: 0},
-  learner_badges: { type: Number, default: 0}
+  learn_language_id: Number,
+  introduction: String,
+  point: { type: Number, default: 0 },
+  level: { type: Number, default: 0 },
+  teacher_badges: { type: Number, default: 0 },
+  learner_badges: { type: Number, default: 0 },
+  created_at: { type: Date, default: Date.now },
+  conversations: [{ type: Schema.Types.ObjectId, ref: 'conversations' }]
 });
 
 OAuthUsersSchema.static('getUser', function(username, password, facebook_token, cb) {
@@ -39,8 +39,8 @@ OAuthUsersSchema.static('getUser', function(username, password, facebook_token, 
             lastname: fbProfile.last_name,
             email: fbProfile.email,
             gender: fbProfile.gender,
-            facebook_id: fbProfile.id,
-            avatar_url: "https://graph.facebook.com/" + fbProfile.id + "/picture?type=large"
+            avatar_url: "https://graph.facebook.com/" + fbProfile.id + "/picture?type=large",
+            facebook_id: fbProfile.id
           }).save(function(err, user){
             if (!err) {
               cb(null, user.id);

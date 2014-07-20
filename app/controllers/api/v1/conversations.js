@@ -1,24 +1,17 @@
 /**
- * List latest conversations of current user (show history)
- * @param {Number} from
- * @param {Number} length
+ * List latest conversations of current user
  * @return {Array} conversations
  */
-
 exports.list = function(req, res){
-  var q = req.query;
-
   res.app.db.models.User.findById(
     req.user.id,
     function(err, user){
       res.app.db.models.Conversation
         .find({ '_id': {$in: user.conversations} })
-        .skip(q.from - 1)
-        .limit(q.length)
         .sort({ lastest_update: -1})
         .populate({
           path: 'messages',
-          options: {limit: 10}
+          options: { limit: 5 }
         })
         .exec(function(err, conversations){
           res.json(conversations);
@@ -55,25 +48,18 @@ exports.create = function(req, res){
 };
 
 /**
- * Update conversation
- * @return {void}
+ * Swap role in one conversation
+ * @param {String} conversation_id
+ * @return {JSON} conversation
  */
-exports.update = function(req, res){
-  // res.app.db.models.Conversation
-  //   .findByIdAndUpdate(req.params.id, { 
-  //     $set: { 
-  //       teacher_id: req.body.teacher_id,
-  //       learner_id: req.body.learner_id
-  //     }
-  //   }, function(err, model){
-  //     res.send(err || 200);
-  //   });
-};
+exports.swapRole = function(req, res){
+  res.app.db.models.Conversation.findById(req.params.conversation_id, function(err, conversation){
+    var temp = conversation.teacher_id;
+    conversation.teacher_id = conversation.learner_id;
+    conversation.learner_id = temp;
 
-exports.flag = function(req, res){
-
-};
-
-exports.like = function(req, res){
-
+    conversation.save(function(err, doc){
+      res.send(doc);
+    });
+  });
 };
