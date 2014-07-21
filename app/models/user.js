@@ -1,27 +1,35 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var validate = require('mongoose-validator').validate;
+var validate = require('mongoose-validator');
 var https = require('https');
 var bl = require('bl');
 
+genderValidator = [
+  validate({
+    validator: 'isIn',
+    arguments: ['male', 'female'],
+    message: 'Gender should be male or female'
+  })
+];
+
 var OAuthUsersSchema = new Schema({
-  firstname: { type: String },
-  lastname: { type: String },
-  email: { type: String },
-  gender: { type: String },
+  firstname: { type: String, required: true },
+  lastname: { type: String, required: true },
+  email: { type: String, required: true },
+  gender: { type: String, required: true },
   birthday: Date,
   avatar_url: String,
   facebook_id: { type: String, required: true },
-  device_token: { type: String },
-  native_language_id: { type: Number },
+  device_token: String,
+  native_language_id: Number,
   written_proficiency_id: Number,
   spoken_proficiency_id: Number,
   learn_language_id: Number,
   introduction: String,
   point: { type: Number, default: 0 },
-  level: { type: Number, default: 0 },
-  teacher_badges: { type: Number, default: 0 },
-  learner_badges: { type: Number, default: 0 },
+  level: { type: Number, default: 1 },
+  teacher_badges: Number,
+  learner_badges: Number,
   created_at: { type: Date, default: Date.now },
   conversations: [{ type: Schema.Types.ObjectId, ref: 'conversations' }]
 });
@@ -39,6 +47,7 @@ OAuthUsersSchema.static('getUser', function(username, password, facebook_token, 
             lastname: fbProfile.last_name,
             email: fbProfile.email,
             gender: fbProfile.gender,
+            birthday: fbProfile.birthday,
             avatar_url: "https://graph.facebook.com/" + fbProfile.id + "/picture?type=large",
             facebook_id: fbProfile.id
           }).save(function(err, user){

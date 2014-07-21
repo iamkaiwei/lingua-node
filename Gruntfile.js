@@ -33,7 +33,7 @@ module.exports = function(grunt) {
         });
       },
       function(err) {
-        console.log('Error: '+err.err);
+        console.log(err);
         done(false);
     })
     .then(
@@ -42,7 +42,7 @@ module.exports = function(grunt) {
         done();
       },
       function(err) {
-        console.log('Error: '+err.err);
+        console.log(err);
         done(false);
     });
   });
