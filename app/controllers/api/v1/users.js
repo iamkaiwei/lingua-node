@@ -10,7 +10,11 @@ exports.list = function(req, res){
       conversations: 0
     },
     function(err, users){
-      res.send(users);
+      if (!err) {
+        res.send(users);
+      } else {
+        res.send(500, err);
+      }
     });
 };
 
@@ -26,7 +30,11 @@ exports.me = function(req, res){
       conversations: 0
     },
     function(err, user){
-      res.send(user);
+      if (!err) {
+        res.send(user);
+      } else {
+        res.send(500, err);
+      }
     });
 };
 
@@ -43,12 +51,16 @@ exports.show = function(req, res){
       conversations: 0
     },
     function(err, user){
-      res.send(user);
+      if (!err) {
+        res.send(user);
+      } else {
+        res.send(500, err);
+      }
     });
 };
 
 /**
- * Match current user with an appropriate user
+ * Match teacher for current user
  * @return {Array} users
  */
 exports.match = function(req, res){
@@ -56,9 +68,6 @@ exports.match = function(req, res){
     req.user.id,
     function(err, currentUser){
       res.app.db.models.User.aggregate([
-          // { $sort: {point:-1} },
-          // { $group: {_id:'$gender', user:{$first:'$$ROOT'}} }
-          
           { $match: {_id:{$ne:currentUser._id}} },
           { $sort: {point:-1} },
           { $group: {_id:'$gender', users:{$push:{
@@ -72,13 +81,6 @@ exports.match = function(req, res){
         ],
         function(err, groups){
           if (!err) {
-            // var chosenUser = {};
-            // groups.forEach(function(group){
-            //   group.user.point += currentUser.gender !== group._id ? 5 : 0;
-            //   if (!chosenUser.point || chosenUser.point <= group.user.point)
-            //     chosenUser = group.user;
-            // });
-
             var topUsers = groups
               .reduce(function(previousValue, currentValue){
                 currentValue.users = currentValue.users.slice(0, 5).map(function(user){
@@ -97,7 +99,7 @@ exports.match = function(req, res){
 
             res.send(topUsers);
           } else {
-            res.send(err);
+            res.send(500, err);
           }
         });
     });
@@ -109,8 +111,10 @@ exports.match = function(req, res){
  */
 exports.update = function(req, res){
   //protected fields
+  delete req.body.facebook_id
   delete req.body.written_proficiency_id;
   delete req.body.spoken_proficiency_id;
+  delete req.body.point;
   delete req.body.level;
   delete req.body.teacher_badges;
   delete req.body.learner_badges;
@@ -119,7 +123,11 @@ exports.update = function(req, res){
     req.params.user_id,
     req.body,
     function(err, user){
-      res.send(user);
+      if (!err) {
+        res.send(user);
+      } else {
+        res.send(500, err);
+      }
     });
 };
 
@@ -131,9 +139,8 @@ exports.sendNotification = function(req, res){
     req.body.user_id,
     'device_token',
     function(err, user){
-      if (err) {
-        res.send(404, "wrong user id");
-      }
+      if (err)
+        res.send(404);
 
       var query = new Parse.Query(Parse.Installation);
       query.equalTo('deviceToken', user.device_token);
@@ -146,7 +153,7 @@ exports.sendNotification = function(req, res){
       },
       {
         success: function(){
-          res.send(200, 'Push success');
+          res.send(200);
         },
         error: function(error){
           res.send(500, error);

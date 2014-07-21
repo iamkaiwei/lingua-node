@@ -25,6 +25,7 @@ app.set('view engine', 'jade');
 //set environment variables
 app.config = require('./app/config')(app);
 
+//initial Parse
 var Parse = require('parse').Parse;
 Parse.initialize(app.config.parse_app_id, app.config.parse_javascript_key);
 
@@ -49,7 +50,8 @@ app.use(session({
 app.oauth = oauthserver({
   model: app.db.models.oauth,
   grants: ['password'],
-  debug: true
+  debug: true,
+  accessTokenLifetime: 7200
 });
 
 //route requests
