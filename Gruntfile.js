@@ -2,19 +2,24 @@ var mongoose = require('mongoose');
 mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost/lingua_development');
 
 var User = require('./app/models/user')
-  , OAuthClientsModel = require('./app/models/oauth_client');
+  , OAuthClientsModel = require('./app/models/oauth_client')
+  , Conversation = require('./app/models/conversation');
 
 module.exports = function(grunt) {
   grunt.registerTask('db-reset', function() {
     //invoke async mode
     var done = this.async();
 
-    User.collection.remove(function() {
-      console.log("Empty users collection");
+    OAuthClientsModel.collection.remove(function() {    
+      console.log("Empty oauth_clients collection");
 
-      OAuthClientsModel.collection.remove(function() {
-        console.log("Empty oauth_clients collection");
-        done();
+      User.collection.remove(function() {
+        console.log("Empty users collection");
+
+        Conversation.collection.remove(function() {
+          console.log("Empty conversations collection");
+          done();
+        });
       });
     });
   });
@@ -22,15 +27,15 @@ module.exports = function(grunt) {
   grunt.registerTask('db-seed', function() {
     var done = this.async();
 
-    User.create(require('./sample-data/users.json'))
+    OAuthClientsModel.create({
+      clientId: 'lingua-ios',
+      clientSecret: 'l1n9u4',
+      redirectUri: '/oauth/redirect'
+    })
     .then(
       function() {
-        console.log('Inserted all users');
-        return OAuthClientsModel.create({
-          clientId: 'lingua-ios',
-          clientSecret: 'l1n9u4',
-          redirectUri: '/oauth/redirect'
-        });
+        console.log('Inserted all clients');
+        return User.create(require('./sample-data/users.json'));
       },
       function(err) {
         console.log(err);
@@ -38,7 +43,16 @@ module.exports = function(grunt) {
     })
     .then(
       function() {
-        console.log('Inserted all clients');
+        console.log('Inserted all users');
+        return Conversation.create(require('./sample-data/conversations.json'));
+      },
+      function(err) {
+        console.log(err);
+        done(false);
+    })
+    .then(
+      function() {
+        console.log('Inserted all conversations');
         done();
       },
       function(err) {

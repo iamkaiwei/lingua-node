@@ -1,0 +1,26 @@
+[
+  {
+    "_id": "53ccedb306415c0b7f39e863",
+    "teacher_id": "53cca0a4ad53bc9b1f5668ae",
+    "learner_id": "53cca0a4ad53bc9b1f5668ad",
+    "messages": [],
+    "created_at": "2014-07-21T10:38:43.813Z",
+    "lastest_update": "2014-07-21T10:38:43.817Z"
+  },
+  {
+    "_id": "53ccedb306415c0b7f39e864",
+    "teacher_id": "53cca0a4ad53bc9b1f5668ae",
+    "learner_id": "53cca0a4ad53bc9b1f5668ac",
+    "messages": [],
+    "created_at": "2014-07-21T10:38:43.813Z",
+    "lastest_update": "2014-07-21T10:38:43.817Z"
+  },
+  {
+    "_id": "53ccedb306415c0b7f39e865",
+    "teacher_id": "53cca0a4ad53bc9b1f5668ab",
+    "learner_id": "53cca0a4ad53bc9b1f5668ae",
+    "messages": [],
+    "created_at": "2014-07-21T10:38:43.813Z",
+    "lastest_update": "2014-07-21T10:38:43.817Z"
+  }
+]
