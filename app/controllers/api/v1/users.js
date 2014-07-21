@@ -38,7 +38,10 @@ exports.me = function(req, res){
 exports.show = function(req, res){
   res.app.db.models.User.findById(
     req.params.user_id,
-    'firstname lastname email gender birthday avatar_url level',
+    {
+      __v: 0,
+      conversations: 0
+    },
     function(err, user){
       res.send(user);
     });
@@ -53,16 +56,49 @@ exports.match = function(req, res){
     req.user.id,
     function(err, currentUser){
       res.app.db.models.User.aggregate([
-          // { $group: {_id:"$gender", point:{$max:"$point"}} }
+          // { $sort: {point:-1} },
+          // { $group: {_id:'$gender', user:{$first:'$$ROOT'}} }
+          
+          { $match: {_id:{$ne:currentUser._id}} },
           { $sort: {point:-1} },
-          { $group: {_id:'$gender', user_id:{$first:'$_id'}, point:{$first:'$point'}} }
+          { $group: {_id:'$gender', users:{$push:{
+            firstname: '$firstname',
+            lastname: '$lastname',
+            gender: '$gender',
+            avatar_url: '$avatar_url',
+            point: '$point',
+            level: '$level'
+          }}} }
         ],
-        function(err, users){
-          users.forEach(function(user){
-            user.point += currentUser.gender !== user._id ? 5 : 0;
-          });
+        function(err, groups){
+          if (!err) {
+            // var chosenUser = {};
+            // groups.forEach(function(group){
+            //   group.user.point += currentUser.gender !== group._id ? 5 : 0;
+            //   if (!chosenUser.point || chosenUser.point <= group.user.point)
+            //     chosenUser = group.user;
+            // });
 
-          res.send(users);
+            var topUsers = groups
+              .reduce(function(previousValue, currentValue){
+                currentValue.users = currentValue.users.slice(0, 5).map(function(user){
+                  user.point += currentUser.gender !== currentValue._id ? 5 : 0;
+                  return user;
+                });
+                return previousValue.concat(currentValue.users);
+              }, [])
+              .sort(function(a, b){
+                if (a['point'] < b['point'])
+                   return 1;
+                if (a['point'] > b['point'])
+                  return -1;
+                return 0;
+              });
+
+            res.send(topUsers);
+          } else {
+            res.send(err);
+          }
         });
     });
 };

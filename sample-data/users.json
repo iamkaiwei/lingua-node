@@ -8,7 +8,7 @@
     "birthday": "1980-08-07T17:00:00.000Z",
     "avatar_url": "https://graph.facebook.com/330229833800587/picture?type=large",
     "facebook_id": "330229833800587",
-    "point": 0,
+    "point": 2,
     "level": 1,
     "created_at": "2014-07-21T05:09:56.003Z"
   },
@@ -21,7 +21,7 @@
     "birthday": "1980-08-07T17:00:00.000Z",
     "avatar_url": "https://graph.facebook.com/263728040485350/picture?type=large",
     "facebook_id": "263728040485350",
-    "point": 0,
+    "point": 4,
     "level": 1,
     "created_at": "2014-07-21T05:10:36.549Z"
   },
@@ -34,7 +34,7 @@
     "birthday": "1980-08-07T17:00:00.000Z",
     "avatar_url": "https://graph.facebook.com/1480017338909456/picture?type=large",
     "facebook_id": "1480017338909456",
-    "point": 0,
+    "point": 6,
     "level": 1,
     "created_at": "2014-07-21T05:11:06.110Z"
   },
@@ -47,7 +47,7 @@
     "birthday": "1980-08-07T17:00:00.000Z",
     "avatar_url": "https://graph.facebook.com/330911663729217/picture?type=large",
     "facebook_id": "330911663729217",
-    "point": 0,
+    "point": 8,
     "level": 1,
     "created_at": "2014-07-21T05:11:38.967Z"
   },
@@ -60,7 +60,7 @@
     "birthday": "1980-08-07T17:00:00.000Z",
     "avatar_url": "https://graph.facebook.com/256044071269049/picture?type=large",
     "facebook_id": "256044071269049",
-    "point": 0,
+    "point": 10,
     "level": 1,
     "created_at": "2014-07-21T05:12:17.818Z"
   },
@@ -73,7 +73,7 @@
     "birthday": "1980-08-07T17:00:00.000Z",
     "avatar_url": "https://graph.facebook.com/348917748589713/picture?type=large",
     "facebook_id": "348917748589713",
-    "point": 0,
+    "point": 12,
     "level": 1,
     "created_at": "2014-07-21T05:12:53.900Z"
   },
@@ -86,7 +86,7 @@
     "birthday": "1980-08-07T17:00:00.000Z",
     "avatar_url": "https://graph.facebook.com/343931589099014/picture?type=large",
     "facebook_id": "343931589099014",
-    "point": 0,
+    "point": 14,
     "level": 1,
     "created_at": "2014-07-21T05:13:25.242Z"
   },
@@ -99,7 +99,7 @@
     "birthday": "1980-08-07T17:00:00.000Z",
     "avatar_url": "https://graph.facebook.com/1509902862577297/picture?type=large",
     "facebook_id": "1509902862577297",
-    "point": 0,
+    "point": 16,
     "level": 1,
     "created_at": "2014-07-21T05:13:57.807Z"
   }
