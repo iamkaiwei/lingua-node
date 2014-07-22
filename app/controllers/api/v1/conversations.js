@@ -45,23 +45,46 @@ exports.list = function(req, res){
 exports.create = function(req, res){
   var b = req.body;
 
-  new res.app.db.models.Conversation({
-    teacher_id: b.teacher_id,
-    learner_id: b.learner_id
-  }).save(function(err, conversation){
-    res.app.db.models.User.update(
-      {
-        $or: [
-          { _id: b.teacher_id },
-          { _id: b.learner_id }
-        ]
-      },
-      { $push: {conversations: conversation._id} },
-      { multi: true },
-      function(err, numberAffected, raw){
-        res.send(conversation);
-      });
-  });
+  res.app.db.models.Conversation.find(
+    {
+      $or: [
+        {$and:[
+            {teacher_id:b.teacher_id},
+            {learner_id:b.learner_id}
+          ]},
+        {$and:[
+            {teacher_id:b.learner_id},
+            {learner_id:b.teacher_id}
+          ]}
+      ]
+    },
+    function(err, conversations){
+      if (conversations.length) {
+        res.send(500, "This conversation already existed")
+      } else {
+        new res.app.db.models.Conversation({
+          teacher_id: b.teacher_id,
+          learner_id: b.learner_id
+        }).save(function(err, conversation){
+          res.app.db.models.User.update(
+            {
+              $or: [
+                { _id: b.teacher_id },
+                { _id: b.learner_id }
+              ]
+            },
+            { $push: {conversations: conversation._id} },
+            { multi: true },
+            function(err, numberAffected, raw){
+              if (!err) {
+                res.send(conversation);
+              } else {
+                res.send(500, err);
+              }
+            });
+        });
+      }
+    });
 };
 
 /**
@@ -70,13 +93,19 @@ exports.create = function(req, res){
  * @return {JSON} conversation
  */
 exports.swapRole = function(req, res){
-  res.app.db.models.Conversation.findById(req.params.conversation_id, function(err, conversation){
-    var temp = conversation.teacher_id;
-    conversation.teacher_id = conversation.learner_id;
-    conversation.learner_id = temp;
+  res.app.db.models.Conversation.findById(
+    req.params.conversation_id,
+    function(err, conversation){
+      var temp = conversation.teacher_id;
+      conversation.teacher_id = conversation.learner_id;
+      conversation.learner_id = temp;
 
-    conversation.save(function(err, doc){
-      res.send(doc);
+      conversation.save(function(err, doc){
+        if (!err) {
+          res.send(doc);
+        } else {
+          res.send(500, err);
+        }
+      });
     });
-  });
 };

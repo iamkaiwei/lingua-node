@@ -19,7 +19,11 @@ exports.list = function(req, res){
         .limit(length)
         .sort({ created_at: -1 })
         .exec(function(err, messages){
-          res.json(messages);
+          if (!err) {
+            res.json(messages);
+          } else {
+            res.send(500, err);
+          }
         });
     });
 };
