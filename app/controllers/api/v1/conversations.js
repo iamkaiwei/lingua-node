@@ -5,16 +5,33 @@
 exports.list = function(req, res){
   res.app.db.models.User.findById(
     req.user.id,
-    function(err, user){
+    function(err, currentUser){
       res.app.db.models.Conversation
-        .find({ '_id': {$in: user.conversations} })
-        .sort({ lastest_update: -1})
-        .populate({
-          path: 'messages',
-          options: { limit: 5 }
-        })
+        .find(
+          { _id: {$in:currentUser.conversations} },
+          {
+            __v: 0,
+            messages: {$slice:2}
+          }
+        )
+        .sort({ lastest_update: -1 })
+        .populate(
+          'messages',
+          {
+            __v: 0,
+            conversation_id: 0
+          }
+        )
+        .populate(
+          'teacher_id learner_id',
+          'firstname lastname avatar_url'
+        )
         .exec(function(err, conversations){
-          res.json(conversations);
+          if (!err) {
+            res.json(conversations);
+          } else {
+            res.send(500, err);
+          }
         });
     });
 };

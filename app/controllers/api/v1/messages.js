@@ -43,7 +43,7 @@ exports.create = function(req, res){
       req.app.db.models.Conversation.findById(
         p.conversation_id,
         function(err, conversation){
-          conversation.messages.push(message._id);
+          conversation.messages.unshift(message._id);
           conversation.save(function(){
             res.send(message);
           });
