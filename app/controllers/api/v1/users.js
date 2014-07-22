@@ -68,7 +68,17 @@ exports.match = function(req, res){
     req.user.id,
     function(err, currentUser){
       res.app.db.models.User.aggregate([
-          { $match: {_id:{$ne:currentUser._id}} },
+          { $match: {
+            $and: [
+              {_id:{$ne:currentUser._id}},
+              (function(threshold){
+                if (threshold)
+                  return {point:{$lt:+threshold}};
+                else
+                  return {}
+              })(req.query.threshold)
+            ]
+          } },
           { $sort: {point:-1} },
           { $group: {_id:'$gender', users:{$push:{
             firstname: '$firstname',
@@ -129,6 +139,14 @@ exports.update = function(req, res){
         res.send(500, err);
       }
     });
+};
+
+/**
+ * Update point/level of one user
+ * @return {JSON} user
+ */
+exports.requestUpdate = function(req, res){
+  //server will calculate point/level
 };
 
 /**
