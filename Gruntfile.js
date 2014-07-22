@@ -3,7 +3,8 @@ mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost/lingua_developmen
 
 var User = require('./app/models/user')
   , OAuthClientsModel = require('./app/models/oauth_client')
-  , Conversation = require('./app/models/conversation');
+  , Conversation = require('./app/models/conversation')
+  , MessageType = require('./app/models/message_type');
 
 module.exports = function(grunt) {
   grunt.registerTask('db-reset', function() {
@@ -21,6 +22,21 @@ module.exports = function(grunt) {
           done();
         });
       });
+    });
+  });
+
+  grunt.registerTask('db-init', function() {
+    var done = this.async();
+
+    MessageType.create(require('./sample-data/message_types.json'))
+    .then(
+      function() {
+        console.log('Inserted all message types');
+        done();
+      },
+      function(err) {
+        console.log(err);
+        done(false);
     });
   });
 
