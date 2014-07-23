@@ -1,6 +1,6 @@
-#! /app/bin/node
+#!/app/vendor/node/bin/node
 function sayHello() {
   console.log('Hello');
 }
 sayHello();
-exit();
+process.exit();
