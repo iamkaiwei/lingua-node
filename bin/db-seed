@@ -1,0 +1,17 @@
+#!/app/vendor/node/bin/node
+
+var mongoose = require('mongoose');
+mongoose.connect(process.env.MONGO_URL);
+
+var MessageType = require('././app/models/message_type');
+
+MessageType.create(require('././sample_data/message_types.json'))
+.then(
+  function() {
+    console.log('Inserted all message types');
+    process.exit();
+  },
+  function(err) {
+    console.log(err);
+    process.exit();
+})
