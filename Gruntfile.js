@@ -4,7 +4,8 @@ mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost/lingua_developmen
 var User = require('./app/models/user')
   , Conversation = require('./app/models/conversation')
   , OAuthClientsModel = require('./app/models/oauth_client')
-  , MessageType = require('./app/models/message_type');
+  , MessageType = require('./app/models/message_type')
+  , Language = require('./app/models/language');
 
 module.exports = function(grunt) {
   grunt.registerTask('db-reset', function() {
@@ -16,12 +17,25 @@ module.exports = function(grunt) {
 
       Conversation.collection.remove(function() {
         console.log("Empty conversations collection");
-        done();
+        
+        OAuthClientsModel.collection.remove(function() {
+          console.log("Empty oauth_clients collection");
+
+          MessageType.collection.remove(function() {
+            console.log("Empty message_types collection");
+
+            Language.collection.remove(function() {
+              console.log("Empty languages collection");
+
+              done();
+            });
+          });
+        });
       });
     });
   });
 
-  grunt.registerTask('db-init', function() {
+  grunt.registerTask('db-seed', function() {
     var done = this.async();
 
     OAuthClientsModel.create({
@@ -41,6 +55,15 @@ module.exports = function(grunt) {
     .then(
       function() {
         console.log('Inserted all message types');
+        return Language.create(require('./sample_data/languages.json'));
+      },
+      function(err) {
+        console.log(err);
+        done(false);
+    })
+    .then(
+      function() {
+        console.log('Inserted all languages');
         done();
       },
       function(err) {
@@ -49,7 +72,7 @@ module.exports = function(grunt) {
     });
   });
 
-  grunt.registerTask('db-seed', function() {
+  grunt.registerTask('db-seed-samples', function() {
     var done = this.async();
 
     User.create(require('./sample_data/users.json'))

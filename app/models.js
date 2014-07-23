@@ -5,4 +5,6 @@ exports = module.exports = function(app) {
   app.db.models.Conversation = require('./models/conversation');
   app.db.models.Message = require('./models/message');
   app.db.models.MessageType = require('./models/message_type');
+  app.db.models.Language = require('./models/language');
+  app.db.models.LanguageProficiency = require('./models/language_proficiency');
 };

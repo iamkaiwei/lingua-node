@@ -3,9 +3,23 @@
 var mongoose = require('mongoose');
 mongoose.connect(process.env.MONGO_URL);
 
-var MessageType = require('./../app/models/message_type');
+var OAuthClientsModel = require('./../app/models/oauth_client')
+  , MessageType = require('./../app/models/message_type');
 
-MessageType.create(require('./../sample_data/message_types.json'))
+OAuthClientsModel.create({
+  clientId: 'lingua-ios',
+  clientSecret: 'l1n9u4',
+  redirectUri: '/oauth/redirect'
+})
+.then(
+  function() {
+    console.log('Inserted all clients');
+    return MessageType.create(require('./../sample_data/message_types.json'));
+  },
+  function(err) {
+    console.log(err);
+    process.exit();
+})
 .then(
   function() {
     console.log('Inserted all message types');
@@ -14,4 +28,4 @@ MessageType.create(require('./../sample_data/message_types.json'))
   function(err) {
     console.log(err);
     process.exit();
-})
+});
