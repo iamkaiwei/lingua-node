@@ -5,7 +5,8 @@ var User = require('./app/models/user')
   , Conversation = require('./app/models/conversation')
   , OAuthClientsModel = require('./app/models/oauth_client')
   , MessageType = require('./app/models/message_type')
-  , Language = require('./app/models/language');
+  , Language = require('./app/models/language')
+  , LanguageProficiency = require('./app/models/language_proficiency');
 
 module.exports = function(grunt) {
   grunt.registerTask('db-reset', function() {
@@ -27,7 +28,10 @@ module.exports = function(grunt) {
             Language.collection.remove(function() {
               console.log("Empty languages collection");
 
-              done();
+              LanguageProficiency.collection.remove(function() {
+                console.log("Empty language_proficiencies collection");
+                done();
+              });
             });
           });
         });
@@ -64,6 +68,15 @@ module.exports = function(grunt) {
     .then(
       function() {
         console.log('Inserted all languages');
+        return LanguageProficiency.create(require('./sample_data/language_proficiencies.json'));
+      },
+      function(err) {
+        console.log(err);
+        done(false);
+    })
+    .then(
+      function() {
+        console.log('Inserted all language proficiencies');
         done();
       },
       function(err) {

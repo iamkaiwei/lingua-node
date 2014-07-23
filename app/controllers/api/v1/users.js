@@ -23,13 +23,19 @@ exports.list = function(req, res){
  * @return {JSON} user
  */
 exports.me = function(req, res){
-  res.app.db.models.User.findById(
-    req.user.id,
-    {
-      __v: 0,
-      conversations: 0
-    },
-    function(err, user){
+  res.app.db.models.User
+    .findById(
+      req.user.id,
+      {
+        __v: 0,
+        conversations: 0
+      }
+    )
+    .populate(
+      'native_language_id written_proficiency_id spoken_proficiency_id learn_language_id',
+      'name'
+    )
+    .exec(function(err, user){
       if (!err) {
         res.send(user);
       } else {

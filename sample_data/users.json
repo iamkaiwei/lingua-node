@@ -121,6 +121,8 @@
     "birthday": "1990-06-23T17:00:00.000Z",
     "avatar_url": "https://graph.facebook.com/700359510032403/picture?type=large",
     "facebook_id": "700359510032403",
+    "native_language_id": 2,
+    "learn_language_id": 1,
     "level": 999,
     "point": 999,
     "created_at": "2014-07-21T07:18:59.524Z",

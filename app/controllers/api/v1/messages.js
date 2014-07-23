@@ -18,7 +18,7 @@ exports.list = function(req, res){
         .skip(length*(page - 1))
         .limit(length)
         .sort({ created_at: -1 })
-        .populate('message_type_id')
+        .populate('message_type_id', 'name')
         .exec(function(err, messages){
           if (!err) {
             res.json(messages);
