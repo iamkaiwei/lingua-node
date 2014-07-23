@@ -1,0 +1,2 @@
+#!/app/vendor/node/bin/node
+require('./../task').resetDatabase(process.exit);
