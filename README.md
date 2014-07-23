@@ -19,9 +19,13 @@ Empty all collections
 ```
   grunt db-reset
 ```
-Seed sample data
+Seed base data
 ```
   grunt db-seed
+```
+Seed sample data
+```
+  grunt db-seed-samples
 ```
 ### Start server ###
 * Start mongoDB server: run ```mongod```
