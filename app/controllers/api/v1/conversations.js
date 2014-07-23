@@ -43,9 +43,11 @@ exports.list = function(req, res){
  * @return {JSON} conversation
  */
 exports.create = function(req, res){
-  var b = req.body;
+  var workflow = new req.app.utility.Workflow(req, res),
+    b = req.body;
 
-  res.app.db.models.Conversation.find(
+  workflow.on('checkDuplicatedConversation', function(){
+    res.app.db.models.Conversation.find(
     {
       $or: [
         {$and:[
@@ -60,31 +62,38 @@ exports.create = function(req, res){
     },
     function(err, conversations){
       if (conversations.length) {
-        res.send(500, "This conversation already existed")
+        return workflow.emit('exception', 500, "This conversation already existed");
       } else {
-        new res.app.db.models.Conversation({
-          teacher_id: b.teacher_id,
-          learner_id: b.learner_id
-        }).save(function(err, conversation){
-          res.app.db.models.User.update(
-            {
-              $or: [
-                { _id: b.teacher_id },
-                { _id: b.learner_id }
-              ]
-            },
-            { $push: {conversations: conversation._id} },
-            { multi: true },
-            function(err, numberAffected, raw){
-              if (!err) {
-                res.send(conversation);
-              } else {
-                res.send(500, err);
-              }
-            });
-        });
+        workflow.emit('createNewConversation');
       }
     });
+  });
+
+  workflow.on('createNewConversation', function(){
+    new res.app.db.models.Conversation({
+      teacher_id: b.teacher_id,
+      learner_id: b.learner_id
+    }).save(function(err, conversation){
+      res.app.db.models.User.update(
+        {
+          $or: [
+            { _id: b.teacher_id },
+            { _id: b.learner_id }
+          ]
+        },
+        { $push: {conversations: conversation._id} },
+        { multi: true },
+        function(err, numberAffected, raw){
+          if (!err) {
+            return workflow.emit('response', 200, conversation);
+          } else {
+            return workflow.emit('exception', 500, err);
+          }
+        });
+    });
+  });
+
+  workflow.emit('checkDuplicatedConversation');
 };
 
 /**

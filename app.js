@@ -57,6 +57,9 @@ app.oauth = oauthserver({
 //route requests
 require('./app/routes')(app);
 
+//utilities
+require('./app/utilities')(app);
+
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
