@@ -27,6 +27,7 @@ Seed sample data
 ```
   grunt db-seed-samples
 ```
+
 ### Start server ###
 * Start mongoDB server: run ```mongod```
 * Start server: run ```node app.js```
@@ -56,3 +57,8 @@ function usePasswordGrant (done) {
   });
 }
 ```
+
+### Deployment to Heroku ###
+* http://linguatheapp.herokuapp.com/
+* Reset database: run ```heroku run db-reset```
+* Seed data: run ```heroku run db-seed```
