@@ -77,6 +77,7 @@ exports.match = function(req, res){
           { $match: {
             $and: [
               {_id:{$ne:currentUser._id}},
+              {native_language_id:currentUser.learn_language_id},
               (function(threshold){
                 if (threshold)
                   return {point:{$lt:+threshold}};
@@ -85,22 +86,33 @@ exports.match = function(req, res){
               })(req.query.threshold)
             ]
           } },
+          { $project: {
+            firstname: 1,
+            lastname: 1,
+            gender: 1,
+            avatar_url: 1,
+            native_language_id: 1,
+            learn_language_id: 1,
+            point: 1,
+            level: 1,
+            match_by_language: {$cond:{if:{$eq:['$learn_language_id', currentUser.native_language_id]},
+                                       then:{$add:[1]},
+                                       else:{$add:[0]}
+                                      }}
+          } },
           { $sort: {point:-1} },
-          { $group: {_id:'$gender', users:{$push:{
-            firstname: '$firstname',
-            lastname: '$lastname',
-            gender: '$gender',
-            avatar_url: '$avatar_url',
-            point: '$point',
-            level: '$level'
-          }}} }
+          { $group: {
+            _id:{gender:'$gender', match_by_language:'$match_by_language'},
+            users:{$push:"$$ROOT"}
+          } }
         ],
         function(err, groups){
           if (!err) {
             var topUsers = groups
               .reduce(function(previousValue, currentValue){
                 currentValue.users = currentValue.users.slice(0, 5).map(function(user){
-                  user.point += currentUser.gender !== currentValue._id ? 5 : 0;
+                  user.point += currentUser.gender !== currentValue._id.gender ? 5 : 0;
+                  user.point += currentValue._id.match_by_language ? 5 : 0;
                   return user;
                 });
                 return previousValue.concat(currentValue.users);
