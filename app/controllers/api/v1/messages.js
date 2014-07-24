@@ -14,7 +14,10 @@ exports.list = function(req, res){
     req.params.conversation_id,
     function(err, conversation){
       res.app.db.models.Message
-        .find({ '_id': {$in: conversation.messages} })
+        .find(
+          { '_id': {$in: conversation.messages} },
+          { __v: 0 }
+        )
         .skip(length*(page - 1))
         .limit(length)
         .sort({ created_at: -1 })
