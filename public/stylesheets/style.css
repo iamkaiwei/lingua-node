@@ -1,3 +1,8 @@
 body {
-  font: 300 14px 'Open Sans', sans-serif;
+  font: 300 14px 'Roboto Slab', serif;
+  color: #000;
+  background-color: #fff;
+}
+h1 {
+  font-weight: 400;
 }

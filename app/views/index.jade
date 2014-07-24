@@ -24,5 +24,9 @@ block content
     if currentUserId
       p
         | Current user: #{currentUserId}
-    button(onClick="checkLoginState();")
-      | Login with Facebook
+    p
+      button(onClick="checkLoginState();")
+        | Login with Facebook
+    p
+      button(onClick="refreshToken();")
+        | Refresh token
