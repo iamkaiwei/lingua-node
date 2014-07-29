@@ -51,7 +51,7 @@ app.oauth = oauthserver({
   model: app.db.models.oauth,
   grants: ['password', 'authorization_code', 'refresh_token'],
   debug: true,
-  accessTokenLifetime: 7200
+  accessTokenLifetime: null
 });
 
 //route requests
