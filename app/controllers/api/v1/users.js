@@ -95,14 +95,17 @@ exports.match = function(req, res){
             learn_language_id: 1,
             point: 1,
             level: 1,
-            match_by_language: {$cond:{if:{$eq:['$learn_language_id', currentUser.native_language_id]},
-                                       then:{$add:[1]},
-                                       else:{$add:[0]}
-                                      }}
+            // match_by_language: {$cond:{if:{$eq:['$learn_language_id', currentUser.native_language_id]},
+            //                            then:{$add:[1]},
+            //                            else:{$add:[0]}
+            //                           }}
           } },
           { $sort: {point:-1} },
           { $group: {
-            _id:{gender:'$gender', match_by_language:'$match_by_language'},
+            _id:{
+              gender:'$gender',
+              // match_by_language:'$match_by_language'
+            },
             users:{$push:"$$ROOT"}
           } }
         ],
