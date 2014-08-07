@@ -20,6 +20,7 @@ exports = module.exports = function(app) {
   app.get('/api/v1/users/:user_id', app.oauth.authorise(), users.show);
   app.put('/api/v1/users/:user_id', app.oauth.authorise(), users.update);
   app.post('/api/v1/users/send_notification', app.oauth.authorise(), users.sendNotification);
+  app.post('/api/v1/upload', users.upload);
 
   //conversation
   app.get('/api/v1/conversations', app.oauth.authorise(), conversations.list);

@@ -19,7 +19,9 @@
     "express-session": "~1.6.5",
     "errorhandler": "~1.1.1",
     "bl": "~0.8.2",
-    "parse": "~1.2.19"
+    "parse": "~1.2.19",
+    "aws-sdk": "~2.0.11",
+    "connect-multiparty": "~1.2.0"
   },
   "devDependencies": {
     "grunt": "~0.4.5"

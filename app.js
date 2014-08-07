@@ -1,15 +1,17 @@
 //module dependencies.
-var express = require('express'),
-  http = require('http'),
-  path = require('path'),
-  mongoose = require('mongoose'),
-  oauthserver = require('node-oauth2-server'),
-  morgan = require('morgan'),
-  bodyParser = require('body-parser'),
-  methodOverride = require('method-override'),
-  cookieParser = require('cookie-parser'),
-  session = require('express-session'),
-  errorhandler = require('errorhandler');
+var express = require('express')
+  , http = require('http')
+  , path = require('path')
+  , mongoose = require('mongoose')
+  , oauthserver = require('node-oauth2-server')
+  , morgan  = require('morgan')
+  , bodyParser = require('body-parser')
+  , multipart = require('connect-multiparty')
+  , methodOverride = require('method-override')
+  , cookieParser = require('cookie-parser')
+  , session = require('express-session')
+  , errorhandler = require('errorhandler')
+;
 
 //create express app
 var app = express(),
@@ -24,10 +26,6 @@ app.set('view engine', 'jade');
 //set environment variables
 app.config = require('./app/config')(app);
 
-//initial Parse
-var Parse = require('parse').Parse;
-Parse.initialize(app.config.parse_app_id, app.config.parse_javascript_key);
-
 //setup mongoose
 app.db = mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost/lingua_development');
 
@@ -36,10 +34,9 @@ require('./app/models')(app);
 
 //all environments
 app.use(morgan('dev'));
-app.use(bodyParser.urlencoded({
-  extended: false
-}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(multipart());
 app.use(methodOverride());
 app.use(cookieParser());
 app.use(session({
@@ -76,6 +73,6 @@ if ('production' == app.get('env')) {
 
 app.use(app.oauth.errorHandler());
 
-server.listen(app.get('port'), function() {
+server.listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
