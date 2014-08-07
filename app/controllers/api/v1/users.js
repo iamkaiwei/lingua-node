@@ -94,7 +94,7 @@ exports.match = function(req, res){
             native_language_id: 1,
             learn_language_id: 1,
             point: 1,
-            level: 1,
+            level: 1
             // match_by_language: {$cond:{if:{$eq:['$learn_language_id', currentUser.native_language_id]},
             //                            then:{$add:[1]},
             //                            else:{$add:[0]}
@@ -103,10 +103,19 @@ exports.match = function(req, res){
           { $sort: {point:-1} },
           { $group: {
             _id:{
-              gender:'$gender',
+              gender:'$gender'
               // match_by_language:'$match_by_language'
             },
-            users:{$push:"$$ROOT"}
+            users:{$push:{
+              firstname: '$firstname',
+              lastname: '$lastname',
+              gender: '$gender',
+              avatar_url: '$avatar_url',
+              native_language_id: '$native_language_id',
+              learn_language_id: '$learn_language_id',
+              point: '$point',
+              level: '$level'
+            }}
           } }
         ],
         function(err, groups){
@@ -115,7 +124,7 @@ exports.match = function(req, res){
               .reduce(function(previousValue, currentValue){
                 currentValue.users = currentValue.users.slice(0, 5).map(function(user){
                   user.point += currentUser.gender !== currentValue._id.gender ? 5 : 0;
-                  user.point += currentValue._id.match_by_language ? 5 : 0;
+                  // user.point += currentValue._id.match_by_language ? 5 : 0;
                   return user;
                 });
                 return previousValue.concat(currentValue.users);
