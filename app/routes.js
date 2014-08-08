@@ -1,6 +1,7 @@
-var users = require('./controllers/api/v1/users');
-var conversations = require('./controllers/api/v1/conversations');
-var messages = require('./controllers/api/v1/messages');
+var users = require('./controllers/api/v1/users'),
+  conversations = require('./controllers/api/v1/conversations'),
+  messages = require('./controllers/api/v1/messages'),
+  languages = require('./controllers/api/v1/languages');
 
 exports = module.exports = function(app) {
   app.all('/oauth/token', app.oauth.grant());
@@ -30,4 +31,7 @@ exports = module.exports = function(app) {
   //message
   app.get('/api/v1/conversations/:conversation_id/messages', app.oauth.authorise(), messages.list);
   app.post('/api/v1/conversations/:conversation_id/messages', app.oauth.authorise(), messages.create);
+
+  //language
+  app.get('/api/v1/languages', languages.list);
 };
