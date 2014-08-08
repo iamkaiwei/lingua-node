@@ -31,6 +31,7 @@ var OAuthUsersSchema = new Schema({
   teacher_badges: Number,
   learner_badges: Number,
   created_at: { type: Date, default: Date.now },
+  latest_online: { type: Date, default: Date.now },
   conversations: [{ type: Schema.Types.ObjectId, ref: 'conversations' }]
 });
 

@@ -37,6 +37,33 @@ exports.list = function(req, res){
 };
 
 /**
+ * List offline conversations of current user
+ * @return {Array} conversations
+ */
+exports.getOfflineConversations = function(req, res){
+  res.app.db.models.User.findById(
+    req.user.id,
+    function(err, currentUser){
+      res.app.db.models.Conversation
+        .find(
+          {
+            _id: {$in:currentUser.conversations},
+            lastest_update: {$gt:currentUser.latest_online}
+          },
+          '_id'
+        )
+        .sort({ lastest_update: -1 })
+        .exec(function(err, conversations){
+          if (!err) {
+            res.json(conversations);
+          } else {
+            res.send(500, err);
+          }
+        });
+    });
+};
+
+/**
  * Create new conversation
  * @param {String} teacher_id
  * @param {String} learner_id
