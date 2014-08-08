@@ -103,7 +103,8 @@ exports.match = function(req, res){
           { $sort: {point:-1} },
           { $group: {
             _id:{
-              gender:'$gender'
+              gender:'$gender',
+              learn_language_id:'$learn_language_id'
               // match_by_language:'$match_by_language'
             },
             users:{$push:{
@@ -125,6 +126,7 @@ exports.match = function(req, res){
                 currentValue.users = currentValue.users.slice(0, 5).map(function(user){
                   user.point += currentUser.gender !== currentValue._id.gender ? 5 : 0;
                   // user.point += currentValue._id.match_by_language ? 5 : 0;
+                  user.point += currentUser.native_language_id === currentValue._id.learn_language_id ? 5 : 0;
                   return user;
                 });
                 return previousValue.concat(currentValue.users);
@@ -182,10 +184,10 @@ exports.requestUpdate = function(req, res){
 /**
  * Push notification
  */
-exports.sendNotification = function(req, res){
-  var Parse = require('parse').Parse;
-  Parse.initialize(res.app.config.parse_app_id, res.app.config.parse_javascript_key);
+var Parse = require('parse').Parse;
+Parse.initialize(process.env.PARSE_APP_ID, process.env.PARSE_JAVASCRIPT_KEY);
 
+exports.sendNotification = function(req, res){
   res.app.db.models.User.findById(
     req.body.user_id,
     {
@@ -233,8 +235,8 @@ exports.upload = function(req, res){
   
   require('fs').readFile(image.path, function(err, file_buffer){
     var params = {
-      Bucket: '3mins-staging',
-      Key: 'lingua-images/'+image.name,
+      Bucket: 'lingua-staging-bucket',
+      Key: 'images/'+image.name,
       Body: file_buffer,
       ACL: 'public-read'
     };
