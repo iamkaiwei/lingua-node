@@ -89,7 +89,7 @@ exports.create = function(req, res){
     },
     function(err, conversations){
       if (conversations.length) {
-        return workflow.emit('exception', 500, "This conversation already existed");
+        return workflow.emit('response', 200, conversations[0]);
       } else {
         workflow.emit('createNewConversation');
       }
