@@ -10,24 +10,30 @@ exports.list = function(req, res){
     length = q.length || 2,
     page = q.page || 1;
 
-  res.app.db.models.Conversation.findById(
-    req.params.conversation_id,
-    function(err, conversation){
-      res.app.db.models.Message
-        .find(
-          { '_id': {$in: conversation.messages} },
-          { __v: 0 }
-        )
-        .skip(length*(page - 1))
-        .limit(length)
-        .sort({ created_at: -1 })
-        .populate('message_type_id', 'name')
-        .exec(function(err, messages){
-          if (!err) {
-            res.json(messages);
-          } else {
-            res.send(500, err);
-          }
+  res.app.db.models.Conversation
+    .findById(
+      req.params.conversation_id,
+      {
+        __v: 0
+      }
+    )
+    .populate({
+      path: 'messages',
+      select: { __v: 0 },
+      options: {
+        skip: length*(page - 1),
+        limit: length,
+        sort: { created_at: -1 }
+      }
+    })
+    .exec(function(err, conversation){
+      res.app.db.models.Message.populate(
+        conversation.messages,
+        {
+          path: 'message_type_id sender_id',
+          select: 'name firstname lastname avatar_url'
+        }, function (err, messages){
+          res.send(messages);
         });
     });
 };
