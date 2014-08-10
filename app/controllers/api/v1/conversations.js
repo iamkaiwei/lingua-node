@@ -24,7 +24,7 @@ exports.list = function(req, res){
         )
         .populate(
           'teacher_id learner_id',
-          'firstname lastname avatar_url'
+          'firstname lastname avatar_url native_language_id learn_language_id'
         )
         .exec(function(err, conversations){
           if (!err) {
