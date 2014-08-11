@@ -242,7 +242,7 @@ exports.upload = function(req, res){
     };
     s3.putObject(params, function(err, data) {
       var aws_url = 'https://'+params.Bucket+'.s3.amazonaws.com/'+params.Key;
-      res.send(aws_url);
+      res.json({'image_url': aws_url});
     });
   });
 };
