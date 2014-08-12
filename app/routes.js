@@ -21,7 +21,16 @@ exports = module.exports = function(app) {
   app.get('/api/v1/users/:user_id', app.oauth.authorise(), users.show);
   app.put('/api/v1/users/:user_id', app.oauth.authorise(), users.update);
   app.post('/api/v1/users/send_notification', app.oauth.authorise(), users.sendNotification);
-  app.post('/api/v1/upload', users.upload);
+  app.post('/api/v1/upload', app.oauth.authorise(), users.upload);
+
+  // like & block
+  app.post('/api/v1/users/:user_id/like', app.oauth.authorise(), users.like);
+  app.post('/api/v1/users/:user_id/flag', app.oauth.authorise(), users.flag);
+  app.post('/api/v1/users/:user_id/unlike', app.oauth.authorise(), users.unlike);
+  app.post('/api/v1/users/:user_id/unflag', app.oauth.authorise(), users.unflag);
+
+  // app.post('/api/v1/users/:user_id/toggleLike', app.oauth.authorise(), users.toggleLike);
+  // app.post('/api/v1/users/:user_id/toggleBlock', app.oauth.authorise(), users.toggleBlock);
 
   //conversation
   app.get('/api/v1/conversations', app.oauth.authorise(), conversations.list);

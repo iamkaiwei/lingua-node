@@ -200,7 +200,7 @@ exports.sendNotification = function(req, res){
 
       var query = new Parse.Query(Parse.Installation);
       query.equalTo('deviceToken', user.device_token);
-       
+
       Parse.Push.send({
         where: query,
         data: {
@@ -232,7 +232,7 @@ AWS.config.loadFromPath('./app/aws.json');
 exports.upload = function(req, res){
   var s3 = new AWS.S3(),
     image = req.files.image;
-  
+
   require('fs').readFile(image.path, function(err, file_buffer){
     var params = {
       Bucket: 'lingua-staging-bucket',
@@ -245,4 +245,89 @@ exports.upload = function(req, res){
       res.json({'image_url': aws_url});
     });
   });
+};
+
+/**
+ * like a user
+ * @return {Boolean}
+ */
+exports.like = function(req, res){
+  res.app.db.models.User.findByIdAndUpdate(
+    req.params.user_id,
+    {
+      $addToSet: {
+        likes: req.user.id
+      }
+    },
+    function(err, user){
+      if (!err) {
+        res.send(200);
+      } else {
+        res.send(500, err);
+      }
+    });
+};
+
+/**
+ * remove like
+ * @return {Boolean}
+ */
+exports.unlike = function(req, res){
+  res.app.db.models.User.findByIdAndUpdate(
+    req.params.user_id,
+    {
+      $pull: {
+        likes: req.user.id
+      }
+    },
+    function(err, user){
+      if (!err) {
+        res.send(200);
+      } else {
+        res.send(500, err);
+      }
+    });
+};
+
+
+/**
+ * like a user
+ * @return {Boolean}
+ */
+exports.flag = function(req, res){
+  res.app.db.models.User.findByIdAndUpdate(
+    req.params.user_id,
+    {
+      $addToSet: {
+        flags: req.user.id
+      }
+    },
+    function(err, user){
+      if (!err) {
+        res.send(200);
+      } else {
+        res.send(500, err);
+      }
+    });
+};
+
+/**
+ * remove flag
+ * @return {Boolean}
+ */
+exports.unflag = function(req, res){
+  res.app.db.models.User.findByIdAndUpdate(
+    req.params.user_id,
+    {
+      $pull: {
+        flags: req.user.id
+      }
+    },
+    function(err, user){
+      if (!err) {
+        res.send(200);
+      } else {
+        res.send(500, err);
+      }
+    });
 };

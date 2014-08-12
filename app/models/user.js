@@ -32,11 +32,13 @@ var OAuthUsersSchema = new Schema({
   learner_badges: Number,
   created_at: { type: Date, default: Date.now },
   latest_online: { type: Date, default: Date.now },
+  likes: [{type: Schema.Types.ObjectId, ref: 'users'}],
+  flags: [{type: Schema.Types.ObjectId, ref: 'users'}],
   conversations: [{ type: Schema.Types.ObjectId, ref: 'conversations' }]
 });
 
 OAuthUsersSchema.static('getUser', function(username, password, facebook_token, cb) {
-  
+
   https.get('https://graph.facebook.com/me?access_token=' + facebook_token, function(response){
     response.pipe(bl(function(err, data){
       var fbProfile = JSON.parse(data.toString());
