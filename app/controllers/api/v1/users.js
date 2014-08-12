@@ -11,7 +11,7 @@ exports.list = function(req, res){
     },
     function(err, users){
       if (!err) {
-        res.send(users);
+        res.json(users);
       } else {
         res.send(500, err);
       }

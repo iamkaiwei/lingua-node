@@ -23,7 +23,7 @@ exports = module.exports = function(app) {
   app.post('/api/v1/users/send_notification', app.oauth.authorise(), users.sendNotification);
   app.post('/api/v1/upload', app.oauth.authorise(), users.upload);
 
-  // like & block
+  //like & flag
   app.post('/api/v1/users/:user_id/like', app.oauth.authorise(), users.like);
   app.post('/api/v1/users/:user_id/flag', app.oauth.authorise(), users.flag);
   app.post('/api/v1/users/:user_id/unlike', app.oauth.authorise(), users.unlike);
