@@ -32,6 +32,7 @@ var OAuthUsersSchema = new Schema({
   learner_badges: Number,
   created_at: { type: Date, default: Date.now },
   latest_online: { type: Date, default: Date.now },
+  latest_update_point: { type: Date },
   likes: [{type: Schema.Types.ObjectId, ref: 'users'}],
   flags: [{type: Schema.Types.ObjectId, ref: 'users'}],
   conversations: [{ type: Schema.Types.ObjectId, ref: 'conversations' }]
