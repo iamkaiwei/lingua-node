@@ -154,8 +154,8 @@ exports.match = function(req, res){
 exports.update = function(req, res){
   //protected fields
   delete req.body.facebook_id;
-  delete req.body.written_proficiency_id;
-  delete req.body.spoken_proficiency_id;
+  // delete req.body.written_proficiency_id;
+  // delete req.body.spoken_proficiency_id;
   delete req.body.point;
   delete req.body.level;
   delete req.body.teacher_badges;
