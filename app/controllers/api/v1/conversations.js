@@ -28,7 +28,14 @@ exports.list = function(req, res){
         )
         .exec(function(err, conversations){
           if (!err) {
-            res.json(conversations);
+            res.app.db.models.Language.populate(
+              conversations,
+              {
+                path: 'teacher_id.native_language_id teacher_id.learn_language_id learner_id.native_language_id learner_id.learn_language_id',
+                select: 'name'
+              }, function (err, conversations){
+                res.json(conversations);
+              });
           } else {
             res.send(500, err);
           }
@@ -112,12 +119,35 @@ exports.create = function(req, res){
         { multi: true },
         function(err, numberAffected, raw){
           if (!err) {
-            return workflow.emit('response', 200, conversation);
+            workflow.emit('populateUser', conversation);
           } else {
             return workflow.emit('exception', 500, err);
           }
         });
     });
+  });
+
+  workflow.on('populateUser', function(doc){
+    res.app.db.models.Conversation.populate(
+      doc,
+      {
+        path: 'teacher_id learner_id',
+        select: 'firstname lastname avatar_url native_language_id learn_language_id'
+      }, function (err, conversation){
+        workflow.emit('populateLanguage', conversation);
+      });
+  });
+
+  workflow.on('populateLanguage', function(doc){
+    res.app.db.models.Conversation.populate(
+      doc,
+      {
+        path: 'teacher_id.native_language_id teacher_id.learn_language_id learner_id.native_language_id learner_id.learn_language_id',
+        select: 'name',
+        model: 'languages'
+      }, function (err, conversation){
+        return workflow.emit('response', 200, conversation);
+      });
   });
 
   workflow.emit('checkDuplicatedConversation');
