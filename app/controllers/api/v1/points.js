@@ -11,6 +11,7 @@ exports.increasePoint = function(req, res){
 
       if (!user.latest_update_point || diff > 24) {
         user.latest_update_point = now.toISOString();
+        user.point += 2;
         user.save(function(err, user){
           res.send(200);
         });
