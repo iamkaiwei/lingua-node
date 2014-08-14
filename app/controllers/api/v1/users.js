@@ -114,6 +114,7 @@ exports.match = function(req, res){
               // match_by_language:'$match_by_language'
             },
             users:{$push:{
+              _id: '$_id',
               firstname: '$firstname',
               lastname: '$lastname',
               gender: '$gender',
