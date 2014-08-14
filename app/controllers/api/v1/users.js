@@ -3,13 +3,19 @@
  * @return {Array} users
  */
 exports.list = function(req, res){
-  res.app.db.models.User.find(
-    {},
-    {
-      __v: 0,
-      conversations: 0
-    },
-    function(err, users){
+  res.app.db.models.User
+    .find(
+      {},
+      {
+        __v: 0,
+        conversations: 0
+      }
+    )
+    .populate(
+      'native_language_id written_proficiency_id spoken_proficiency_id learn_language_id',
+      'name'
+    )
+    .exec(function(err, users){
       if (!err) {
         res.json(users);
       } else {
@@ -139,7 +145,14 @@ exports.match = function(req, res){
                 return 0;
               });
 
-            res.send(topUsers);
+            res.app.db.models.User.populate(
+              topUsers,
+              {
+                path: 'native_language_id learn_language_id',
+                select: 'name'
+              }, function (err, users){
+                res.send(users);
+              });
           } else {
             res.send(500, err);
           }
