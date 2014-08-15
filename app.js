@@ -11,6 +11,7 @@ var express = require('express')
   , cookieParser = require('cookie-parser')
   , session = require('express-session')
   , errorhandler = require('errorhandler')
+  , createDomain = require('domain').create;
 ;
 
 //create express app
@@ -50,6 +51,20 @@ app.oauth = oauthserver({
   grants: ['password', 'authorization_code', 'refresh_token'],
   debug: true,
   accessTokenLifetime: null
+});
+
+app.use(function(req, res, next){
+  var domain = createDomain();
+
+  domain.on('error', function(err){
+    res.statusCode = 500;
+    res.end(err.message + '\n');
+
+    domain.dispose();
+  });
+
+  domain.enter();
+  next();
 });
 
 //route requests
