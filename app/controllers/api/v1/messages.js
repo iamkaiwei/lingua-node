@@ -50,6 +50,10 @@ exports.create = function(req, res){
       return message;
     });
 
+  console.log("********************");
+  console.log(b.messages);
+  console.log("********************");
+
   res.app.db.models.Message.create(messagesArray, function(err){
     if (!err) {
       var messages = Array.prototype.slice.call(arguments, 0).slice(1);
