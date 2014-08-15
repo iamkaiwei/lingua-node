@@ -108,22 +108,26 @@ exports.create = function(req, res){
       teacher_id: b.teacher_id,
       learner_id: b.learner_id
     }).save(function(err, conversation){
-      res.app.db.models.User.update(
-        {
-          $or: [
-            { _id: b.teacher_id },
-            { _id: b.learner_id }
-          ]
-        },
-        { $push: {conversations: conversation._id} },
-        { multi: true },
-        function(err, numberAffected, raw){
-          if (!err) {
-            workflow.emit('populateUser', conversation);
-          } else {
-            return workflow.emit('exception', 500, err);
-          }
-        });
+      if (!err) {
+        res.app.db.models.User.update(
+          {
+            $or: [
+              { _id: b.teacher_id },
+              { _id: b.learner_id }
+            ]
+          },
+          { $push: {conversations: conversation._id} },
+          { multi: true },
+          function(err, numberAffected, raw){
+            if (!err) {
+              workflow.emit('populateUser', conversation);
+            } else {
+              return workflow.emit('exception', 500, err);
+            }
+          });
+      } else {
+        return workflow.emit('exception', 500, err);
+      }
     });
   });
 
@@ -134,7 +138,11 @@ exports.create = function(req, res){
         path: 'teacher_id learner_id',
         select: 'firstname lastname avatar_url native_language_id learn_language_id'
       }, function (err, conversation){
-        workflow.emit('populateLanguage', conversation);
+        if (err) {
+          return workflow.emit('exception', 500, err);
+        } else {
+          workflow.emit('populateLanguage', conversation);
+        }
       });
   });
 
@@ -146,7 +154,11 @@ exports.create = function(req, res){
         select: 'name',
         model: 'languages'
       }, function (err, conversation){
-        return workflow.emit('response', 200, conversation);
+        if (err) {
+          return workflow.emit('exception', 500, err);
+        } else {
+          return workflow.emit('response', 200, conversation);
+        }
       });
   });
 
