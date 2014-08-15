@@ -45,7 +45,7 @@ exports.list = function(req, res){
 exports.create = function(req, res){
   var b = req.body,
     p = req.params,
-    messagesArray = b.map(function(message){
+    messagesArray = b.messages.map(function(message){
       message.conversation_id = p.conversation_id;
       return message;
     });
