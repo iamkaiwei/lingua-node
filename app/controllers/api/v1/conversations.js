@@ -96,7 +96,7 @@ exports.create = function(req, res){
     },
     function(err, conversations){
       if (conversations.length) {
-        return workflow.emit('response', 200, conversations[0]);
+        workflow.emit('populateUser', conversations[0]);
       } else {
         workflow.emit('createNewConversation');
       }
