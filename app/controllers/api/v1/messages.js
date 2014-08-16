@@ -43,16 +43,16 @@ exports.list = function(req, res){
  * @return {JSON} message
  */
 exports.create = function(req, res){
+  console.log("********************");
+  console.log(req.body.messages);
+  console.log("********************");
+
   var b = req.body,
     p = req.params,
     messagesArray = JSON.parse(b.messages).map(function(message){
       message.conversation_id = p.conversation_id;
       return message;
     });
-
-  console.log("********************");
-  console.log(b.messages);
-  console.log("********************");
 
   res.app.db.models.Message.create(messagesArray, function(err){
     if (!err) {
