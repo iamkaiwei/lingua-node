@@ -44,7 +44,10 @@ exports.list = function(req, res){
  */
 exports.create = function(req, res){
   console.log("********************");
+  console.log(req.body);
   console.log(req.body.messages);
+  console.log(req.files);
+  console.log(req.files.messages);
   console.log("********************");
 
   var b = req.body,
