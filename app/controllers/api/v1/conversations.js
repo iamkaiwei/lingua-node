@@ -29,8 +29,7 @@ exports.list = function(req, res){
         .exec(function(err, conversations){
           if (!err) {
             conversations = JSON.parse(JSON.stringify(conversations)).map(function(c, i){
-              if (c.lastest_update > c.lastest_access)
-                c.have_new_messages = true;
+              c.have_new_messages = c.lastest_update > c.lastest_access;
               return c;
             });
 
