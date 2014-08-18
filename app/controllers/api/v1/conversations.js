@@ -28,6 +28,12 @@ exports.list = function(req, res){
         )
         .exec(function(err, conversations){
           if (!err) {
+            conversations = JSON.parse(JSON.stringify(conversations)).map(function(c, i){
+              if (c.lastest_update > c.lastest_access)
+                c.have_new_messages = true;
+              return c;
+            });
+
             res.app.db.models.Language.populate(
               conversations,
               {
@@ -40,6 +46,25 @@ exports.list = function(req, res){
             res.send(500, err);
           }
         });
+    });
+};
+
+/**
+ * Leave conversation
+ * @return {JSON} conversation
+ */
+exports.leaveConversation = function(req, res){
+  res.app.db.models.Conversation.findByIdAndUpdate(
+    req.params.conversation_id,
+    {
+      $set: {lastest_access:new Date().toISOString()}
+    },
+    function(err, conversation){
+      if (!err) {
+        res.send(conversation);
+      } else {
+        res.send(500, err);
+      }
     });
 };
 

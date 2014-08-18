@@ -35,8 +35,9 @@ exports = module.exports = function(app) {
 
   //conversation
   app.get('/api/v1/conversations', app.oauth.authorise(), conversations.list);
-  app.get('/api/v1/conversations/offline_conversations', app.oauth.authorise(), conversations.getOfflineConversations);
+  // app.get('/api/v1/conversations/offline_conversations', app.oauth.authorise(), conversations.getOfflineConversations);
   app.post('/api/v1/conversations', app.oauth.authorise(), conversations.create);
+  app.put('/api/v1/conversations/:conversation_id/leave_conversation', app.oauth.authorise(), conversations.leaveConversation);
   app.put('/api/v1/conversations/:conversation_id/swap_role', app.oauth.authorise(), conversations.swapRole);
 
   //message
