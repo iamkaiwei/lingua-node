@@ -27,15 +27,12 @@ exports = module.exports = function(app) {
   app.post('/api/v1/users/:user_id/flag', app.oauth.authorise(), users.flag);
   app.post('/api/v1/users/:user_id/unlike', app.oauth.authorise(), users.unlike);
   app.post('/api/v1/users/:user_id/unflag', app.oauth.authorise(), users.unflag);
-  // app.post('/api/v1/users/:user_id/toggleLike', app.oauth.authorise(), users.toggleLike);
-  // app.post('/api/v1/users/:user_id/toggleBlock', app.oauth.authorise(), users.toggleBlock);
   
   //point
   app.put('/api/v1/increase_point/me', app.oauth.authorise(), points.increasePoint);
 
   //conversation
   app.get('/api/v1/conversations', app.oauth.authorise(), conversations.list);
-  // app.get('/api/v1/conversations/offline_conversations', app.oauth.authorise(), conversations.getOfflineConversations);
   app.post('/api/v1/conversations', app.oauth.authorise(), conversations.create);
   app.put('/api/v1/conversations/:conversation_id/leave_conversation', app.oauth.authorise(), conversations.leaveConversation);
   app.put('/api/v1/conversations/:conversation_id/swap_role', app.oauth.authorise(), conversations.swapRole);
