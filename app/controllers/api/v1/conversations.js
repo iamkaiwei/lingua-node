@@ -26,18 +26,21 @@ exports.list = function(req, res){
         )
         .populate(
           'teacher_id learner_id',
-          'firstname lastname avatar_url native_language_id learn_language_id'
+          'firstname lastname avatar_url native_language_id learn_language_id likes flags'
         )
         .exec(function(err, conversations){
           if (!err) {
             conversations = JSON.parse(JSON.stringify(conversations)).map(function(c, i){
               var lastestAccessOfCurrentUser = c.lastest_access[currentUserId];
-
               if (lastestAccessOfCurrentUser) {
                 c.have_new_messages = c.lastest_update > lastestAccessOfCurrentUser;
               } else {
                 c.have_new_messages = !!c.lastest_update;
               }
+
+              var partner = currentUserId === c.teacher_id._id ? c.learner_id : c.teacher_id;
+              c.isLiked = !!~partner.likes.indexOf(currentUserId);
+              c.isFlagged = !!~partner.flags.indexOf(currentUserId);
 
               return c;
             });
