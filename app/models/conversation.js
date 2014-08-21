@@ -5,9 +5,11 @@ var ConversationsSchema = new Schema({
   teacher_id: { type: Schema.Types.ObjectId, ref: 'users', required: true },
   learner_id: { type: Schema.Types.ObjectId, ref: 'users', required: true },
   lastest_update: { type: Date },
-  lastest_access: Schema.Types.Mixed,
+  lastest_access: { type: Schema.Types.Mixed, default: {} },
   created_at: { type: Date, default: Date.now },
   messages: [{ type: Schema.Types.ObjectId, ref: 'messages' }]
+}, {
+  toJSON: { minimize: false }
 });
 
 // ConversationsSchema.pre('save', function(next){

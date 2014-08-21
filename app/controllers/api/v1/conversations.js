@@ -31,16 +31,14 @@ exports.list = function(req, res){
         .exec(function(err, conversations){
           if (!err) {
             conversations = JSON.parse(JSON.stringify(conversations)).map(function(c, i){
-              var lastestAccessOfCurrentUser = 
-                c.lastest_access ?
-                c.lastest_access[currentUserId] : 
-                undefined;
+              var lastestAccessOfCurrentUser = c.lastest_access[currentUserId];
 
-              c.have_new_messages = 
-                lastestAccessOfCurrentUser ? 
-                c.lastest_update > lastestAccessOfCurrentUser : 
-                !!c.lastest_update;
-
+              if (lastestAccessOfCurrentUser) {
+                c.have_new_messages = c.lastest_update > lastestAccessOfCurrentUser;
+              } else {
+                c.have_new_messages = !!c.lastest_update;
+              }
+              
               return c;
             });
 
@@ -69,10 +67,8 @@ exports.leaveConversation = function(req, res){
     req.params.conversation_id,
     function(err, conversation){
       if (!err) {
-        var temp = JSON.parse(JSON.stringify(conversation.lastest_access));
-        temp[req.user.id] = new Date().toISOString();
-        conversation.lastest_access = temp;
-
+        conversation.lastest_access[req.user.id] = new Date().toISOString();
+        conversation.markModified('lastest_access');
         conversation.save(function(err, doc){
           res.send(doc);
         });
