@@ -3,8 +3,10 @@
  * @return {Array} conversations
  */
 exports.list = function(req, res){
+  var currentUserId = req.user.id;
+
   res.app.db.models.User.findById(
-    req.user.id,
+    currentUserId,
     function(err, currentUser){
       res.app.db.models.Conversation
         .find(
@@ -29,7 +31,16 @@ exports.list = function(req, res){
         .exec(function(err, conversations){
           if (!err) {
             conversations = JSON.parse(JSON.stringify(conversations)).map(function(c, i){
-              c.have_new_messages = c.lastest_update > c.lastest_access;
+              var lastestAccessOfCurrentUser = 
+                c.lastest_access ?
+                c.lastest_access[currentUserId] : 
+                undefined;
+
+              c.have_new_messages = 
+                lastestAccessOfCurrentUser ? 
+                c.lastest_update > lastestAccessOfCurrentUser : 
+                !!c.lastest_update;
+
               return c;
             });
 
@@ -50,17 +61,21 @@ exports.list = function(req, res){
 
 /**
  * Leave conversation
+ * @param {String} conversation_id
  * @return {JSON} conversation
  */
 exports.leaveConversation = function(req, res){
-  res.app.db.models.Conversation.findByIdAndUpdate(
+  res.app.db.models.Conversation.findById(
     req.params.conversation_id,
-    {
-      $set: {lastest_access:new Date().toISOString()}
-    },
     function(err, conversation){
       if (!err) {
-        res.send(conversation);
+        var temp = JSON.parse(JSON.stringify(conversation.lastest_access));
+        temp[req.user.id] = new Date().toISOString();
+        conversation.lastest_access = temp;
+
+        conversation.save(function(err, doc){
+          res.send(doc);
+        });
       } else {
         res.send(500, err);
       }
@@ -71,28 +86,28 @@ exports.leaveConversation = function(req, res){
  * List offline conversations of current user
  * @return {Array} conversations
  */
-exports.getOfflineConversations = function(req, res){
-  res.app.db.models.User.findById(
-    req.user.id,
-    function(err, currentUser){
-      res.app.db.models.Conversation
-        .find(
-          {
-            _id: {$in:currentUser.conversations},
-            lastest_update: {$gt:currentUser.latest_online}
-          },
-          '_id'
-        )
-        .sort({ lastest_update: -1 })
-        .exec(function(err, conversations){
-          if (!err) {
-            res.json(conversations);
-          } else {
-            res.send(500, err);
-          }
-        });
-    });
-};
+// exports.getOfflineConversations = function(req, res){
+//   res.app.db.models.User.findById(
+//     req.user.id,
+//     function(err, currentUser){
+//       res.app.db.models.Conversation
+//         .find(
+//           {
+//             _id: {$in:currentUser.conversations},
+//             lastest_update: {$gt:currentUser.latest_online}
+//           },
+//           '_id'
+//         )
+//         .sort({ lastest_update: -1 })
+//         .exec(function(err, conversations){
+//           if (!err) {
+//             res.json(conversations);
+//           } else {
+//             res.send(500, err);
+//           }
+//         });
+//     });
+// };
 
 /**
  * Create new conversation

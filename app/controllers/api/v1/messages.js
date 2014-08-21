@@ -73,6 +73,8 @@ exports.create = function(req, res){
             return previousValue;
           }, conversation.messages);
 
+          conversation.lastest_update = new Date().toISOString();
+          
           conversation.save(function(err, doc){
             res.send(doc);
           });
