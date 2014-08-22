@@ -275,7 +275,7 @@ exports.like = function(req, res){
     },
     function(err, user){
       if (!err) {
-        res.send(200);
+        res.send(200, {status: 'success'});
       } else {
         res.send(500, err);
       }
@@ -296,7 +296,7 @@ exports.unlike = function(req, res){
     },
     function(err, user){
       if (!err) {
-        res.send(200);
+        res.send(200, {status: 'success'});
       } else {
         res.send(500, err);
       }
@@ -318,7 +318,7 @@ exports.flag = function(req, res){
     },
     function(err, user){
       if (!err) {
-        res.send(200);
+        res.send(200, {status: 'success'});
       } else {
         res.send(500, err);
       }
@@ -339,7 +339,7 @@ exports.unflag = function(req, res){
     },
     function(err, user){
       if (!err) {
-        res.send(200);
+        res.send(200, {status: 'success'});
       } else {
         res.send(500, err);
       }
