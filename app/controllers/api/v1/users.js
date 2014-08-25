@@ -73,9 +73,62 @@ exports.show = function(req, res){
 
 /**
  * Match teacher for current user
+ * @param {Number} threshold
+ * @param {String} partner_role
  * @return {Array} users
  */
 exports.match = function(req, res){
+  var q = req.query,
+    handler = {};
+
+  switch (q.partner_role) {
+    case 'learner':
+      handler.filter = function(currentUser){
+        return {learn_language_id:currentUser.native_language_id};
+      };
+      handler.group = function(){
+        return {
+          gender:'$gender',
+          native_language_id:'$native_language_id'
+        };
+      };
+      handler.calculateBonus = function(currentUser, group){
+        return currentUser.learn_language_id === group._id.native_language_id ? 5 : 0;
+      };
+      break;
+    case 'teacher':
+      handler.filter = function(currentUser){
+        return {native_language_id:currentUser.learn_language_id};
+      };
+      handler.group = function(){
+        return {
+          gender:'$gender',
+          learn_language_id:'$learn_language_id'
+        };
+      };
+      handler.calculateBonus = function(currentUser, group){
+        return currentUser.native_language_id === group._id.learn_language_id ? 5 : 0;
+      };
+      break;
+    default:
+      handler.filter = function(currentUser){
+        return {
+          $and: [
+            {native_language_id:currentUser.native_language_id},
+            {learn_language_id:currentUser.learn_language_id}
+          ]
+        };
+      };
+      handler.group = function(){
+        return {
+          gender:'$gender'
+        };
+      };
+      handler.calculateBonus = function(currentUser, group){
+        return 0;
+      };
+  }
+
   res.app.db.models.User.findById(
     req.user.id,
     function(err, currentUser){
@@ -83,13 +136,13 @@ exports.match = function(req, res){
           { $match: {
             $and: [
               {_id:{$ne:currentUser._id}},
-              {native_language_id:currentUser.learn_language_id},
+              handler.filter(currentUser),
               (function(threshold){
                 if (threshold)
                   return {point:{$lt:+threshold}};
                 else
                   return {}
-              })(req.query.threshold)
+              })(q.threshold)
             ]
           } },
           { $project: {
@@ -108,11 +161,8 @@ exports.match = function(req, res){
           } },
           { $sort: {point:-1} },
           { $group: {
-            _id:{
-              gender:'$gender',
-              learn_language_id:'$learn_language_id'
-              // match_by_language:'$match_by_language'
-            },
+            _id:handler.group(),
+
             users:{$push:{
               _id: '$_id',
               firstname: '$firstname',
@@ -133,7 +183,7 @@ exports.match = function(req, res){
                 currentValue.users = currentValue.users.slice(0, 5).map(function(user){
                   user.point += currentUser.gender !== currentValue._id.gender ? 5 : 0;
                   // user.point += currentValue._id.match_by_language ? 5 : 0;
-                  user.point += currentUser.native_language_id === currentValue._id.learn_language_id ? 5 : 0;
+                  user.point += handler.calculateBonus(currentUser, currentValue);
                   return user;
                 });
                 return previousValue.concat(currentValue.users);
@@ -235,8 +285,8 @@ exports.sendNotification = function(req, res){
 };
 
 /**
- * Upload image to S3
- * @param {File} image
+ * Upload file to S3
+ * @param {File} file
  * @return {String} aws_url
  */
 var AWS = require('aws-sdk');
@@ -245,18 +295,18 @@ AWS.config.loadFromPath('./app/aws.json');
 
 exports.upload = function(req, res){
   var s3 = new AWS.S3(),
-    image = req.files.image;
+    file = req.files.file;
 
-  require('fs').readFile(image.path, function(err, file_buffer){
+  require('fs').readFile(file.path, function(err, file_buffer){
     var params = {
       Bucket: 'lingua-staging-bucket',
-      Key: 'images/'+image.name,
+      Key: 'upload/'+file.name,
       Body: file_buffer,
       ACL: 'public-read'
     };
     s3.putObject(params, function(err, data) {
       var aws_url = 'https://'+params.Bucket+'.s3.amazonaws.com/'+params.Key;
-      res.json({'image_url': aws_url});
+      res.json({'file_url': aws_url});
     });
   });
 };
