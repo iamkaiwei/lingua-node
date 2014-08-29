@@ -306,7 +306,22 @@ exports.upload = function(req, res){
     };
     s3.putObject(params, function(err, data) {
       var aws_url = 'https://'+params.Bucket+'.s3.amazonaws.com/'+params.Key;
-      res.json({'file_url': aws_url});
+      if (~file.type.indexOf('image')) {
+        var info = require('imageinfo')(file_buffer);
+        res.json({
+          'file_url': aws_url,
+          'type': info.mimeType,
+          'size': file_buffer.length,
+          'dimensions': {
+            'width': info.width,
+            'height': info.height
+          }
+        });
+      } else {
+        res.json({
+          'file_url': aws_url
+        });
+      }
     });
   });
 };

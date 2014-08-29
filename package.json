@@ -22,7 +22,8 @@
     "parse": "~1.2.19",
     "aws-sdk": "~2.0.11",
     "connect-multiparty": "~1.2.0",
-    "domain": "~0.2.8"
+    "domain": "~0.2.8",
+    "imageinfo": "~1.0.4"
   },
   "devDependencies": {
     "grunt": "~0.4.5"
