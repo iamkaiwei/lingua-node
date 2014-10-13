@@ -31,11 +31,16 @@ exports.list = function(req, res){
         .exec(function(err, conversations){
           if (!err) {
             conversations = JSON.parse(JSON.stringify(conversations)).map(function(c, i){
-              var lastestAccessOfCurrentUser = c.lastest_access[currentUserId];
-              if (lastestAccessOfCurrentUser) {
-                c.have_new_messages = c.lastest_update > lastestAccessOfCurrentUser;
+              var lastMessage = c.messages.pop();
+              if (lastMessage && lastMessage.sender_id !== currentUserId){
+                var lastestAccessOfCurrentUser = c.lastest_access[currentUserId];
+                if (lastestAccessOfCurrentUser) {
+                  c.have_new_messages = c.lastest_update > lastestAccessOfCurrentUser;
+                } else {
+                  c.have_new_messages = !!c.lastest_update;
+                }
               } else {
-                c.have_new_messages = !!c.lastest_update;
+                c.have_new_messages = false;
               }
 
               var partner = currentUserId === c.teacher_id._id ? c.learner_id : c.teacher_id;
