@@ -181,17 +181,18 @@ exports.match = function(req, res){
             var topUsers = groups
               .reduce(function(previousValue, currentValue){
                 currentValue.users = currentValue.users.slice(0, 5).map(function(user){
-                  user.point += currentUser.gender !== currentValue._id.gender ? 5 : 0;
-                  // user.point += currentValue._id.match_by_language ? 5 : 0;
-                  user.point += handler.calculateBonus(currentUser, currentValue);
+                  user.total_point = user.point;
+                  user.total_point += currentUser.gender !== currentValue._id.gender ? 5 : 0;
+                  // user.total_point += currentValue._id.match_by_language ? 5 : 0;
+                  user.total_point += handler.calculateBonus(currentUser, currentValue);
                   return user;
                 });
                 return previousValue.concat(currentValue.users);
               }, [])
               .sort(function(a, b){
-                if (a['point'] < b['point'])
+                if (a['total_point'] < b['total_point'])
                    return 1;
-                if (a['point'] > b['point'])
+                if (a['total_point'] > b['total_point'])
                   return -1;
                 return 0;
               });
